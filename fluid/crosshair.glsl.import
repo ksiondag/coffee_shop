@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cd3ts721rxswv"
+path="res://.godot/imported/crosshair.glsl-1f25eb9a35a6335f12dd1df44ed43cd5.res"
+
+[deps]
+
+source_file="res://fluid/crosshair.glsl"
+dest_files=["res://.godot/imported/crosshair.glsl-1f25eb9a35a6335f12dd1df44ed43cd5.res"]
+
+[params]
+
