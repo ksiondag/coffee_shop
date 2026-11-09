@@ -11,6 +11,9 @@ const GROUP_SIZE := 8
 
 var cursor := Vector2(0.5, 0.5)
 
+func set_cursor(c: Vector2) -> void:
+	cursor = c
+
 
 func _enter_tree() -> void:
 	RenderingServer.call_on_render_thread(_initialize_compute_code.bind(texture_size))
@@ -23,10 +26,6 @@ func _exit_tree() -> void:
 
 
 func _process(_delta: float) -> void:
-	# TODO: Get mouse cursor via View signal
-	var viewport := get_viewport()
-	cursor = viewport.get_mouse_position() / viewport.get_visible_rect().size
-
 	if output and output.texture_rd_rid != texture_rd:
 		output.texture_rd_rid = texture_rd
 

@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://dncl3nl3u6v65"]
 
+[ext_resource type="Script" uid="uid://fj3mwfs0wcqh" path="res://fluid/view.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://dxjd1l0n8uwqa" path="res://fluid/sim.gd" id="1_ig7tw"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_5c1er"]
@@ -22,8 +23,11 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("Texture2DRD_5c1er")
 expand_mode = 1
+script = ExtResource("1_0xm2m")
 
 [node name="Sim" type="Node" parent="." unique_id=961894542]
 script = ExtResource("1_ig7tw")
 output = SubResource("Texture2DRD_5c1er")
-blue = 0.435
+blue = 0.5
+
+[connection signal="cursor_moved" from="View" to="Sim" method="set_cursor"]
