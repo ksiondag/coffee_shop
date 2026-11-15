@@ -5,7 +5,7 @@ const ComputeShader = preload("res://gpu/compute_shader.gd")
 
 @export var output: Texture2DRD
 
-// NOTE/TODO: The texture size should match the height/width ratio of the view
+# NOTE/TODO: The texture size should match the height/width ratio of the view
 @export var texture_size: Vector2i = Vector2i(512, 512)
 
 @export_range(0.0, 1.0) var red: float
