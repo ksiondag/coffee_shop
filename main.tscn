@@ -28,6 +28,6 @@ script = ExtResource("1_0xm2m")
 [node name="Sim" type="Node" parent="." unique_id=961894542]
 script = ExtResource("1_ig7tw")
 output = SubResource("Texture2DRD_5c1er")
-blue = 0.5
+blue = 1.0
 
 [connection signal="cursor_moved" from="View" to="Sim" method="set_cursor"]
