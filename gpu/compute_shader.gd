@@ -17,8 +17,6 @@ const GROUP_SIZE := 8
 # I think a good next step is writing down each thing
 
 var output: Texture2DRD
-var texture_size: Vector2i = Vector2i(512, 512)
-var blue: float
 
 
 func _init(output_: Texture2DRD, texture_size: Vector2i, shader_path: String) -> void:
