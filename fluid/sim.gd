@@ -28,4 +28,11 @@ func _exit_tree() -> void:
 
 
 func _process(delta: float) -> void:
-	compute_shader.process(cursor, blue)
+	# Must match the shader's Params block field for field: cursor, blue, padding (16 bytes)
+	var bytes := PackedFloat32Array([
+		cursor.x,
+		cursor.y,
+		blue,
+		0.0
+	]).to_byte_array()
+	#compute_shader.process(bytes)

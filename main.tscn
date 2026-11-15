@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://fj3mwfs0wcqh" path="res://fluid/view.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://dxjd1l0n8uwqa" path="res://fluid/sim.gd" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://b7uu1skkuh56d" path="res://fluid/splat.gd" id="3_h2yge"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_5c1er"]
 
@@ -29,5 +30,11 @@ script = ExtResource("1_0xm2m")
 script = ExtResource("1_ig7tw")
 output = SubResource("Texture2DRD_5c1er")
 blue = 1.0
+
+[node name="Splat" type="Node" parent="." unique_id=371714944]
+script = ExtResource("3_h2yge")
+output = SubResource("Texture2DRD_5c1er")
+red = 1.0
+radius = 100.0
 
 [connection signal="cursor_moved" from="View" to="Sim" method="set_cursor"]

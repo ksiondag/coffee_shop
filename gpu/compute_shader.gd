@@ -33,11 +33,11 @@ func free() -> void:
 	RenderingServer.call_on_render_thread(_free_compute_resources)
 
 
-func process(cursor: Vector2, blue: float) -> void:
+func process(bytes: PackedByteArray) -> void:
 	if output and output.texture_rd_rid != texture_rd:
 		output.texture_rd_rid = texture_rd
 
-	RenderingServer.call_on_render_thread(_render_process.bind(cursor, blue))
+	RenderingServer.call_on_render_thread(_render_process.bind(bytes))
 
 
 # Rendering thread variables
@@ -65,6 +65,7 @@ func _initialize_compute_code(size: Vector2i, shader_path: String) -> void:
 	pipeline = rd.compute_pipeline_create(shader)
 
 	var tf = RDTextureFormat.new()
+	# TODO: These are all options I would like to grok
 	# DATA_FORMAT_R16G16B16A16_SFLOAT matches rgba16f in shader
 	tf.format = RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT
 	tf.texture_type = RenderingDevice.TEXTURE_TYPE_2D
@@ -90,17 +91,9 @@ func _initialize_compute_code(size: Vector2i, shader_path: String) -> void:
 	uniform_set = rd.uniform_set_create([uniform], shader, 0)
 
 
-func _render_process(p_cursor: Vector2, p_blue: float) -> void:
+func _render_process(bytes: PackedByteArray) -> void:
 	if rd == null or not pipeline.is_valid() or not uniform_set.is_valid():
 		return
-
-	# Must match the shader's Params block field for field: cursor, blue, padding (16 bytes)
-	var bytes := PackedFloat32Array([
-		p_cursor.x,
-		p_cursor.y,
-		p_blue,
-		0.0
-	]).to_byte_array()
 
 	# Round up so partial groups at the edges are still covered (skip out-of-bounds pixels)
 	@warning_ignore("integer_division")
