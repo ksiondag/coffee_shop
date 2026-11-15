@@ -25,11 +25,8 @@ void main() {
 		return;
 	}
 
-	vec2 uv_pixel = (vec2(pixel) + 0.5) / vec2(size);
-	vec2 uv_cursor = params.cursor;
-
-	float distance_x = uv_pixel.x - uv_cursor.x;
-	float distance_y = uv_pixel.y - uv_cursor.y;
+	float distance_x = pixel.x - params.cursor.x;
+	float distance_y = pixel.y - params.cursor.y;
 	
 	float distance_squared = distance_x * distance_x + distance_y * distance_y;
 

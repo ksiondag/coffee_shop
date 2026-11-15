@@ -5,24 +5,18 @@ const ComputeShader = preload("res://gpu/compute_shader.gd")
 
 @export var output: Texture2DRD
 
-# NOTE/TODO: The texture size should match the height/width ratio of the view
-@export var texture_size: Vector2i = Vector2i(512, 512)
-
 @export_range(0.0, 1.0) var red: float
 @export_range(0.0, 1.0) var green: float
 @export_range(0.0, 1.0) var blue: float
 
-@export_range(0.0, 1.0) var radius: float
+@export var radius: float
 
-# TODO: We need to set variables in the compute shader, which the compute
-# shader class will handle for us
+var texture_size: Vector2i
 var compute_shader: ComputeShader
 
 func _input(event) -> void:
 	if event.is_action_pressed("click"):
 		# Must match the shader's Params block field for field: cursor, blue, padding (16 bytes)
-		var position: Vector2 = event.position
-
 		var bytes := PackedFloat32Array([
 			# color
 			red,
@@ -30,8 +24,8 @@ func _input(event) -> void:
 			blue,
 			1.0,
 			# cursor
-			event.position.x / 1151.0,
-			event.position.y / 645.0,
+			event.position.x,
+			event.position.y,
 			# radius
 			radius,
 			# padding
@@ -42,7 +36,7 @@ func _input(event) -> void:
 
 
 func _enter_tree() -> void:
-	compute_shader = ComputeShader.new(output, texture_size, SHADER_PATH)
+	pass
 
 
 func _exit_tree() -> void:
@@ -54,3 +48,9 @@ func _exit_tree() -> void:
 func _process(delta: float) -> void:
 	# Only send splat on click
 	pass
+
+
+func _on_view_resized(size: Vector2) -> void:
+	if texture_size.y < 1.0 or texture_size.x < 1.0:
+		texture_size = Vector2i(size.x, size.y)
+	compute_shader = ComputeShader.new(output, texture_size, SHADER_PATH)

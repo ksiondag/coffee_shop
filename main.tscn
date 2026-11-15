@@ -29,4 +29,8 @@ script = ExtResource("1_0xm2m")
 script = ExtResource("3_h2yge")
 output = SubResource("Texture2DRD_5c1er")
 red = 1.0
-radius = 0.1
+green = 1.0
+radius = 22.0
+
+[connection signal="resized" from="View" to="View" method="_on_resized"]
+[connection signal="view_resized" from="View" to="Splat" method="_on_view_resized"]
