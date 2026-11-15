@@ -21,9 +21,7 @@ var compute_shader: ComputeShader
 func _input(event) -> void:
 	if event.is_action_pressed("click"):
 		# Must match the shader's Params block field for field: cursor, blue, padding (16 bytes)
-		print(event)
 		var position: Vector2 = event.position
-		
 
 		var bytes := PackedFloat32Array([
 			# color
