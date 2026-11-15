@@ -35,6 +35,6 @@ blue = 1.0
 script = ExtResource("3_h2yge")
 output = SubResource("Texture2DRD_5c1er")
 red = 1.0
-radius = 100.0
+radius = 0.1
 
 [connection signal="cursor_moved" from="View" to="Sim" method="set_cursor"]
