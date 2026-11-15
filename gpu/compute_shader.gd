@@ -33,11 +33,11 @@ func free() -> void:
 	RenderingServer.call_on_render_thread(_free_compute_resources)
 
 
-func process(bytes: PackedByteArray) -> void:
+func process(push_constant: PackedByteArray) -> void:
 	if output and output.texture_rd_rid != texture_rd:
 		output.texture_rd_rid = texture_rd
 
-	RenderingServer.call_on_render_thread(_render_process.bind(bytes))
+	RenderingServer.call_on_render_thread(_render_process.bind(push_constant))
 
 
 # Rendering thread variables
@@ -91,7 +91,7 @@ func _initialize_compute_code(size: Vector2i, shader_path: String) -> void:
 	uniform_set = rd.uniform_set_create([uniform], shader, 0)
 
 
-func _render_process(bytes: PackedByteArray) -> void:
+func _render_process(push_constant: PackedByteArray) -> void:
 	if rd == null or not pipeline.is_valid() or not uniform_set.is_valid():
 		return
 
@@ -104,7 +104,7 @@ func _render_process(bytes: PackedByteArray) -> void:
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
 	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
-	rd.compute_list_set_push_constant(compute_list, bytes, bytes.size())
+	rd.compute_list_set_push_constant(compute_list, push_constant, push_constant.size())
 	rd.compute_list_dispatch(compute_list, x_groups, y_groups, 1)
 	rd.compute_list_end()
 
