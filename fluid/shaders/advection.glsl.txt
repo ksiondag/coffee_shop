@@ -10,7 +10,6 @@ layout(rgba16f, set = 0, binding = 1) uniform restrict readonly image2D velocity
 layout(rgba16f, set = 0, binding = 2) uniform restrict writeonly image2D output_image;
 
 // PushConstant
-// TODO: why std430? What does that mean?
 layout(push_constant, std430) uniform Params {
 	float delta_time;
 	float dissipation;
