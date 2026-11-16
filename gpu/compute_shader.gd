@@ -20,25 +20,15 @@ var output: Texture2DRD
 
 
 func _init(output_: Texture2DRD, texture_size: Vector2i, shader_path: String) -> void:
-	# TODO: Need to handle when multiple shaders use the same texture
-	# Doesn't matter for current use case, though the same texture will be
-	# loaded multiple times
-	# The fix, I believe, is our own reference counting system
 	output = output_
 	RenderingServer.call_on_render_thread(_initialize_compute_code.bind(texture_size, shader_path))
 
 
 func free() -> void:
-	# TODO: Wait, why are we doing this RID() thing here?
-	if output:
-		output.texture_rd_rid = RID()
 	RenderingServer.call_on_render_thread(_free_compute_resources)
 
 
 func process(push_constant: PackedByteArray) -> void:
-	if output and output.texture_rd_rid != texture_rd:
-		output.texture_rd_rid = texture_rd
-
 	RenderingServer.call_on_render_thread(_render_process.bind(push_constant))
 
 
@@ -65,22 +55,26 @@ func _initialize_compute_code(size: Vector2i, shader_path: String) -> void:
 	shader = rd.shader_create_from_spirv(spirv)
 	pipeline = rd.compute_pipeline_create(shader)
 
-	var tf = RDTextureFormat.new()
-	# TODO: These are all options I would like to grok
-	# DATA_FORMAT_R16G16B16A16_SFLOAT matches rgba16f in shader
-	tf.format = RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT
-	tf.texture_type = RenderingDevice.TEXTURE_TYPE_2D
-	tf.width = size.x
-	tf.height = size.y
-	tf.depth = 1
-	tf.array_layers = 1
-	tf.mipmaps = 1
-	# SAMPLING: read by the TextureRect, STORAGE: written by imageStore
-	tf.usage_bits = (
-		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
-		RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
-	)
-	texture_rd = rd.texture_create(tf, RDTextureView.new(), [])
+	if output.texture_rd_rid.is_valid():
+		texture_rd = output.texture_rd_rid
+	else:
+		var tf = RDTextureFormat.new()
+		# TODO: These are all options I would like to grok
+		# DATA_FORMAT_R16G16B16A16_SFLOAT matches rgba16f in shader
+		tf.format = RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT
+		tf.texture_type = RenderingDevice.TEXTURE_TYPE_2D
+		tf.width = size.x
+		tf.height = size.y
+		tf.depth = 1
+		tf.array_layers = 1
+		tf.mipmaps = 1
+		# SAMPLING: read by the TextureRect, STORAGE: written by imageStore
+		tf.usage_bits = (
+			RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
+			RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
+		)
+		texture_rd = rd.texture_create(tf, RDTextureView.new(), [])
+		output.texture_rd_rid = texture_rd
 	size_rd = size
 
 	var uniform := RDUniform.new()
@@ -113,7 +107,7 @@ func _render_process(push_constant: PackedByteArray) -> void:
 func _free_compute_resources() -> void:
 	if rd == null:
 		return
-	
+
 	# Freeing the texture also frees the uniform_set
 	if texture_rd.is_valid():
 		rd.free_rid(texture_rd)
@@ -124,6 +118,8 @@ func _free_compute_resources() -> void:
 
 	# is_valid stays true after freeing, so reset the RIDs
 	texture_rd = RID()
+	if output:
+		output.texture_rd_rid = texture_rd
 	uniform_set = RID()
 	shader = RID()
 	pipeline = RID()
