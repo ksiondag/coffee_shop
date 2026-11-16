@@ -20,6 +20,10 @@ var output: Texture2DRD
 
 
 func _init(output_: Texture2DRD, texture_size: Vector2i, shader_path: String) -> void:
+	# TODO: Need to handle when multiple shaders use the same texture
+	# Doesn't matter for current use case, though the same texture will be
+	# loaded multiple times
+	# The fix, I believe, is our own reference counting system
 	output = output_
 	RenderingServer.call_on_render_thread(_initialize_compute_code.bind(texture_size, shader_path))
 
@@ -39,7 +43,6 @@ func process(push_constant: PackedByteArray) -> void:
 
 
 # Rendering thread variables
-
 var rd: RenderingDevice
 var shader: RID
 var pipeline: RID

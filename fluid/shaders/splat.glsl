@@ -33,6 +33,6 @@ void main() {
 	if (distance_squared <= params.radius * params.radius) {
 		imageStore(output_image, pixel, params.color);
 	} else {
-    imageStore(output_image, pixel, vec4(0,0,0,1));
-  }
+		imageStore(output_image, pixel, vec4(0,0,0,1));
+	}
 }

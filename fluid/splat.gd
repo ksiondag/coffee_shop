@@ -1,6 +1,6 @@
 extends Node
 
-const SHADER_PATH := "res://fluid/splat.glsl"
+const SHADER_PATH := "res://fluid/shaders/splat.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 
 @export var output: Texture2DRD
