@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dncl3nl3u6v65"]
 
 [ext_resource type="Script" uid="uid://fj3mwfs0wcqh" path="res://fluid/view.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://d1sung6xej6yb" path="res://fluid/clear.gd" id="3_1bvp3"]
 [ext_resource type="Script" uid="uid://b7uu1skkuh56d" path="res://fluid/splat.gd" id="3_h2yge"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_5c1er"]
@@ -32,5 +33,10 @@ red = 1.0
 green = 1.0
 radius = 22.0
 
+[node name="Clear" type="Node" parent="." unique_id=1494218191]
+script = ExtResource("3_1bvp3")
+output = SubResource("Texture2DRD_5c1er")
+
 [connection signal="resized" from="View" to="View" method="_on_resized"]
 [connection signal="view_resized" from="View" to="Splat" method="_on_view_resized"]
+[connection signal="view_resized" from="View" to="Clear" method="_on_view_resized"]
