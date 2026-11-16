@@ -5,25 +5,27 @@ const ComputeShader = preload("res://gpu/compute_shader.gd")
 
 @export var output: Texture2DRD
 
-@export_range(0.0, 1.0) var red: float
-@export_range(0.0, 1.0) var green: float
-@export_range(0.0, 1.0) var blue: float
+@export var color: Color
 
 var texture_size: Vector2i
 var compute_shader: ComputeShader
 
+func _clear() -> void:
+	# Must match the shader's Params block field for field: cursor, blue, padding (16 bytes)
+	var bytes := PackedFloat32Array([
+		# color to clear to
+		color.r,
+		color.g,
+		color.b,
+		color.a,
+	]).to_byte_array()
+	if compute_shader != null:
+		compute_shader.process(bytes)
+
+
 func _input(event) -> void:
 	if event.is_action_pressed("right_click"):
-		# Must match the shader's Params block field for field: cursor, blue, padding (16 bytes)
-		var bytes := PackedFloat32Array([
-			# color to clear to
-			red,
-			green,
-			blue,
-			1.0,
-		]).to_byte_array()
-		if compute_shader != null:
-			compute_shader.process(bytes)
+		_clear()
 
 
 func _enter_tree() -> void:
@@ -45,3 +47,4 @@ func _on_view_resized(size: Vector2) -> void:
 	if texture_size.y < 1.0 or texture_size.x < 1.0:
 		texture_size = Vector2i(size.x, size.y)
 		compute_shader = ComputeShader.new(output, texture_size, SHADER_PATH)
+		_clear()

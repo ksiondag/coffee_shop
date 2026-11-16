@@ -36,6 +36,7 @@ radius = 22.0
 [node name="Clear" type="Node" parent="." unique_id=1494218191]
 script = ExtResource("3_1bvp3")
 output = SubResource("Texture2DRD_5c1er")
+color = Color(0.052413613, 0.017636243, 0.003303281, 1)
 
 [connection signal="resized" from="View" to="View" method="_on_resized"]
 [connection signal="view_resized" from="View" to="Splat" method="_on_view_resized"]
