@@ -29,14 +29,13 @@ script = ExtResource("1_0xm2m")
 [node name="Splat" type="Node" parent="." unique_id=371714944]
 script = ExtResource("3_h2yge")
 output = SubResource("Texture2DRD_5c1er")
-red = 1.0
-green = 1.0
+color = Color(1, 1, 0, 1)
 radius = 22.0
 
 [node name="Clear" type="Node" parent="." unique_id=1494218191]
 script = ExtResource("3_1bvp3")
 output = SubResource("Texture2DRD_5c1er")
-color = Color(0.052413613, 0.017636243, 0.003303281, 1)
+color = Color(0.3702715, 0.2038598, 0.09140711, 1)
 
 [connection signal="resized" from="View" to="View" method="_on_resized"]
 [connection signal="view_resized" from="View" to="Splat" method="_on_view_resized"]

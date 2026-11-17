@@ -1,15 +1,17 @@
 extends Node
 
 const SHADER_PATH := "res://fluid/shaders/splat.glsl"
-const ComputeShader = preload("res://gpu/compute_shader.gd")
+const ComputeShaderNew = preload("res://gpu/compute_shader_new.gd")
+const FBO = preload("res://gpu/fbo.gd")
 
 @export var output: Texture2DRD
 @export var color: Color
 
 @export var radius: float
 
+var fbo: FBO
+var compute_shader: ComputeShaderNew
 var texture_size: Vector2i
-var compute_shader: ComputeShader
 
 func _input(event) -> void:
 	if event.is_action_pressed("click"):
@@ -50,4 +52,5 @@ func _process(delta: float) -> void:
 func _on_view_resized(size: Vector2) -> void:
 	if texture_size.y < 1.0 or texture_size.x < 1.0:
 		texture_size = Vector2i(size.x, size.y)
-	compute_shader = ComputeShader.new(output, texture_size, SHADER_PATH)
+		fbo = FBO.new(output, texture_size)
+		compute_shader = ComputeShaderNew.new(fbo, SHADER_PATH)
