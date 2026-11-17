@@ -29,7 +29,7 @@ script = ExtResource("1_0xm2m")
 [node name="Splat" type="Node" parent="." unique_id=371714944]
 script = ExtResource("3_h2yge")
 output = SubResource("Texture2DRD_5c1er")
-color = Color(1, 1, 0, 1)
+color = Color(1, 1, 1, 1)
 radius = 22.0
 
 [node name="Clear" type="Node" parent="." unique_id=1494218191]
