@@ -14,6 +14,29 @@ func _init(texture: Texture2DRD, size: Vector2):
 var rd: RenderingDevice
 
 
+static func create_texture(size: Vector2) -> RID:
+	var rd = RenderingServer.get_rendering_device()
+	if rd == null:
+		push_error("Sim: no RenderingDevice. Compute shaders need Forward+ or Mobile running on Vulkan/D3D12/Metal")
+		return RID()
+	var tf = RDTextureFormat.new()
+	# TODO: These are all options I would like to grok
+	# DATA_FORMAT_R16G16B16A16_SFLOAT matches rgba16f in shader
+	tf.format = RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT
+	tf.texture_type = RenderingDevice.TEXTURE_TYPE_2D
+	tf.width = size.x
+	tf.height = size.y
+	tf.depth = 1
+	tf.array_layers = 1
+	tf.mipmaps = 1
+	# TODO: Need to make this setable by calling code
+	tf.usage_bits = (
+		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
+		RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
+	)
+	return rd.texture_create(tf, RDTextureView.new(), [])
+
+
 func _initialize_texture() -> void:
 	rd = RenderingServer.get_rendering_device()
 	if rd == null:
@@ -24,23 +47,7 @@ func _initialize_texture() -> void:
 		push_error("Unexpected RID on texture: FBO will handle registering textures on GPU")
 		return
 
-	var tf = RDTextureFormat.new()
-	# TODO: These are all options I would like to grok
-	# DATA_FORMAT_R16G16B16A16_SFLOAT matches rgba16f in shader
-	tf.format = RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT
-	tf.texture_type = RenderingDevice.TEXTURE_TYPE_2D
-	tf.width = _size.x
-	tf.height = _size.y
-	tf.depth = 1
-	tf.array_layers = 1
-	tf.mipmaps = 1
-	# TODO: Need to make this setable by calling code
-	tf.usage_bits = (
-		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
-		RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
-	)
-	_texture.texture_rd_rid = rd.texture_create(tf, RDTextureView.new(), [])
-
+	_texture.texture_rd_rid = create_texture(_size)
 
 func free() -> void:
 	if _texture.texture_rd_rid.is_valid():
