@@ -7,8 +7,9 @@ const ComputeShader = preload("res://gpu/compute_shader.gd")
 
 @export var color: Color
 
-var texture_size: Vector2i
+var fbo: FBO
 var compute_shader: ComputeShader
+var texture_size: Vector2i
 
 func _clear() -> void:
 	# Must match the shader's Params block field for field: cursor, blue, padding (16 bytes)
@@ -46,5 +47,6 @@ func _process(delta: float) -> void:
 func _on_view_resized(size: Vector2) -> void:
 	if texture_size.y < 1.0 or texture_size.x < 1.0:
 		texture_size = Vector2i(size.x, size.y)
-		compute_shader = ComputeShader.new(output, texture_size, SHADER_PATH)
+		fbo = FBO.new(output, texture_size)
+		compute_shader = ComputeShader.new(fbo, SHADER_PATH)
 		_clear()

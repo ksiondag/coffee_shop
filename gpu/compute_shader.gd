@@ -1,5 +1,7 @@
 class_name ComputeShader extends RefCounted
 
+const FBO = preload("res://gpu/fbo.gd")
+
 # TODO: Should this be an abstract class?
 # Each compute shader will have its own I/O that needs to be handled
 
@@ -16,12 +18,12 @@ const GROUP_SIZE := 8
 
 # I think a good next step is writing down each thing
 
-var output: Texture2DRD
+var _output: FBO
 
 
-func _init(output_: Texture2DRD, texture_size: Vector2i, shader_path: String) -> void:
-	output = output_
-	RenderingServer.call_on_render_thread(_initialize_compute_code.bind(texture_size, shader_path))
+func _init(output: FBO, shader_path: String) -> void:
+	_output = output
+	RenderingServer.call_on_render_thread(_initialize_compute_code.bind(shader_path))
 
 
 func free() -> void:
@@ -36,12 +38,10 @@ func process(push_constant: PackedByteArray) -> void:
 var rd: RenderingDevice
 var shader: RID
 var pipeline: RID
-var texture_rd: RID
 var uniform_set: RID
-var size_rd: Vector2i
 
 
-func _initialize_compute_code(size: Vector2i, shader_path: String) -> void:
+func _initialize_compute_code(shader_path: String) -> void:
 	rd = RenderingServer.get_rendering_device()
 	if rd == null:
 		push_error("Sim: no RenderingDevice. Compute shaders need Forward+ or Mobile running on Vulkan/D3D12/Metal")
@@ -55,34 +55,7 @@ func _initialize_compute_code(size: Vector2i, shader_path: String) -> void:
 	shader = rd.shader_create_from_spirv(spirv)
 	pipeline = rd.compute_pipeline_create(shader)
 
-	if output.texture_rd_rid.is_valid():
-		texture_rd = output.texture_rd_rid
-	else:
-		var tf = RDTextureFormat.new()
-		# TODO: These are all options I would like to grok
-		# DATA_FORMAT_R16G16B16A16_SFLOAT matches rgba16f in shader
-		tf.format = RenderingDevice.DATA_FORMAT_R16G16B16A16_SFLOAT
-		tf.texture_type = RenderingDevice.TEXTURE_TYPE_2D
-		tf.width = size.x
-		tf.height = size.y
-		tf.depth = 1
-		tf.array_layers = 1
-		tf.mipmaps = 1
-		# SAMPLING: read by the TextureRect, STORAGE: written by imageStore
-		tf.usage_bits = (
-			RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
-			RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
-		)
-		texture_rd = rd.texture_create(tf, RDTextureView.new(), [])
-		output.texture_rd_rid = texture_rd
-	size_rd = size
-
-	var uniform := RDUniform.new()
-	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	# binding = 0 in the shader
-	uniform.binding = 0
-	uniform.add_id(texture_rd)
-	# set = 0 in the shader
+	var uniform = _output.uniform(0)
 	uniform_set = rd.uniform_set_create([uniform], shader, 0)
 
 
@@ -92,9 +65,9 @@ func _render_process(push_constant: PackedByteArray) -> void:
 
 	# Round up so partial groups at the edges are still covered (skip out-of-bounds pixels)
 	@warning_ignore("integer_division")
-	var x_groups := (size_rd.x -1) / GROUP_SIZE + 1
+	var x_groups := (_output.get_size().x -1) / GROUP_SIZE + 1
 	@warning_ignore("integer_division")
-	var y_groups := (size_rd.y -1) / GROUP_SIZE + 1
+	var y_groups := (_output.get_size().y -1) / GROUP_SIZE + 1
 
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
@@ -109,17 +82,13 @@ func _free_compute_resources() -> void:
 		return
 
 	# Freeing the texture also frees the uniform_set
-	if texture_rd.is_valid():
-		rd.free_rid(texture_rd)
+	_output.free()
 	
 	# Freeing the shader also frees the pipeline
 	if shader.is_valid():
 		rd.free_rid(shader)
 
 	# is_valid stays true after freeing, so reset the RIDs
-	texture_rd = RID()
-	if output:
-		output.texture_rd_rid = texture_rd
 	uniform_set = RID()
 	shader = RID()
 	pipeline = RID()
