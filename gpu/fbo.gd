@@ -34,7 +34,7 @@ func _initialize_texture() -> void:
 	tf.depth = 1
 	tf.array_layers = 1
 	tf.mipmaps = 1
-	# SAMPLING: read by the TextureRect, STORAGE: written by imageStore
+	# TODO: Need to make this setable by calling code
 	tf.usage_bits = (
 		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
 		RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
