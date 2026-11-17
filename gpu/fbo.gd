@@ -1,7 +1,9 @@
 class_name FBO extends RefCounted
 
+
 var _size: Vector2
 var _texture: Texture2DRD
+
 
 func _init(texture: Texture2DRD, size: Vector2):
 	_size = size
@@ -12,6 +14,8 @@ func _init(texture: Texture2DRD, size: Vector2):
 
 # Rendering thread variables
 var rd: RenderingDevice
+var _texture_rd: RID
+var _initialized: bool
 
 
 static func create_texture(size: Vector2) -> RID:
@@ -43,24 +47,34 @@ func _initialize_texture() -> void:
 		push_error("Sim: no RenderingDevice. Compute shaders need Forward+ or Mobile running on Vulkan/D3D12/Metal")
 		return
 
-	if _texture.texture_rd_rid.is_valid():
-		push_error("Unexpected RID on texture: FBO will handle registering textures on GPU")
+	if _texture != null and _texture.texture_rd_rid.is_valid():
+		_texture_rd = _texture.texture_rd_rid
+		_initialized = false
 		return
 
-	_texture.texture_rd_rid = create_texture(_size)
+	_texture_rd = create_texture(_size)
+	if _texture:
+		_texture.texture_rd_rid = _texture_rd
+	_initialized = true
+
 
 func free() -> void:
-	if _texture.texture_rd_rid.is_valid():
-		rd.free_rid(_texture.texture_rd_rid)
-	_texture.texture_rd_rid = RID()
+	if not _initialized:
+		return
+	if _texture_rd.is_valid():
+		rd.free_rid(_texture_rd)
+	_texture_rd = RID()
+	if _texture != null:
+		_texture.texture_rd_rid = _texture_rd
 
 
 func uniform(binding: int) -> RDUniform:
 	var uniform := RDUniform.new()
 	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
 	uniform.binding = binding
-	uniform.add_id(_texture.texture_rd_rid)
+	uniform.add_id(_texture_rd)
 	return uniform
+
 
 func get_size() -> Vector2:
 	return _size

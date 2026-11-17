@@ -5,8 +5,8 @@ const FBO = preload("res://gpu/fbo.gd")
 var _size: Vector2
 var _texture: Texture2DRD
 
-var _read: RDTextureFormat
-var _write: RDTextureFormat
+var _read: RID
+var _write: RID
 
 func _init(texture: Texture2DRD, size: Vector2):
 	_size = size
@@ -25,19 +25,21 @@ func _initialize_texture() -> void:
 		push_error("Sim: no RenderingDevice. Compute shaders need Forward+ or Mobile running on Vulkan/D3D12/Metal")
 		return
 
-	if _texture.texture_rd_rid.is_valid():
+	if _texture != null and _texture.texture_rd_rid.is_valid():
 		push_error("Unexpected RID on texture: FBO will handle registering textures on GPU")
 		return
 
 	_read = FBO.create_texture(_size)
 	_write = FBO.create_texture(_size)
-	_texture.texture_rd_rid = _read
+	if _texture != null:
+		_texture.texture_rd_rid = _read
 
 
 func free() -> void:
 	if _texture.texture_rd_rid.is_valid():
 		rd.free_rid(_texture.texture_rd_rid)
-	_texture.texture_rd_rid = RID()
+	if _texture != null:
+		_texture.texture_rd_rid = RID()
 
 
 func uniform(binding: int) -> RDUniform:
@@ -49,4 +51,3 @@ func uniform(binding: int) -> RDUniform:
 
 func get_size() -> Vector2:
 	return _size
-

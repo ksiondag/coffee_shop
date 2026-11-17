@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://fj3mwfs0wcqh" path="res://fluid/view.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://d1sung6xej6yb" path="res://fluid/clear.gd" id="3_1bvp3"]
 [ext_resource type="Script" uid="uid://b7uu1skkuh56d" path="res://fluid/splat.gd" id="3_h2yge"]
+[ext_resource type="Script" uid="uid://cd770751gkai7" path="res://fluid/fluids2d.gd" id="4_1bvp3"]
 
 [sub_resource type="Texture2DRD" id="Texture2DRD_5c1er"]
 
@@ -36,6 +37,9 @@ radius = 22.0
 script = ExtResource("3_1bvp3")
 output = SubResource("Texture2DRD_5c1er")
 color = Color(0.29101217, 0.11783331, 0.058995835, 1)
+
+[node name="Fluids2D" type="Node" parent="." unique_id=1386665208]
+script = ExtResource("4_1bvp3")
 
 [connection signal="resized" from="View" to="View" method="_on_resized"]
 [connection signal="view_resized" from="View" to="Splat" method="_on_view_resized"]

@@ -1,5 +1,6 @@
 extends Node
 
+
 const SHADER_PATH := "res://fluid/shaders/splat.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 const FBO = preload("res://gpu/fbo.gd")
@@ -12,6 +13,7 @@ const FBO = preload("res://gpu/fbo.gd")
 var fbo: FBO
 var compute_shader: ComputeShader
 var texture_size: Vector2i
+
 
 func _input(event) -> void:
 	if event.is_action_pressed("click"):

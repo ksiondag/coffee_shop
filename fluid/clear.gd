@@ -2,6 +2,7 @@ extends Node
 
 const SHADER_PATH := "res://fluid/shaders/clear.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
+const FBO = preload("res://gpu/fbo.gd")
 
 @export var output: Texture2DRD
 
