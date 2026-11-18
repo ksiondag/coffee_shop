@@ -34,12 +34,14 @@ fluid_fields = SubResource("Resource_1bvp3")
 
 [node name="Splat" type="Node" parent="." unique_id=371714944]
 script = ExtResource("3_h2yge")
+fluid_fields = SubResource("Resource_1bvp3")
 output = SubResource("Texture2DRD_5c1er")
 color = Color(1, 1, 1, 1)
 radius = 22.0
 
 [node name="Clear" type="Node" parent="." unique_id=1494218191]
 script = ExtResource("3_1bvp3")
+fluid_fields = SubResource("Resource_1bvp3")
 output = SubResource("Texture2DRD_5c1er")
 color = Color(0.29101217, 0.11783331, 0.058995835, 1)
 

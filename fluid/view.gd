@@ -26,5 +26,5 @@ func _process(delta: float) -> void:
 
 
 func _on_resized() -> void:
-	view_resized.emit(self.size)
 	fluid_fields.initialize(self.size)
+	view_resized.emit(self.size)

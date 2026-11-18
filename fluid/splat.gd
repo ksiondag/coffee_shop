@@ -4,6 +4,9 @@ extends Node
 const SHADER_PATH := "res://fluid/shaders/splat.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 const FBO = preload("res://gpu/fbo.gd")
+const FluidFields = preload("res://fluid/fluid_fields.gd")
+
+@export var fluid_fields: FluidFields
 
 @export var output: Texture2DRD
 @export var color: Color
@@ -51,8 +54,8 @@ func _process(delta: float) -> void:
 	pass
 
 
-func _on_view_resized(size: Vector2) -> void:
-	if texture_size.y < 1.0 or texture_size.x < 1.0:
-		texture_size = Vector2i(size.x, size.y)
-		fbo = FBO.new(output, texture_size)
+func _on_view_resized(_size: Vector2) -> void:
+	if fbo == null && fluid_fields.initialized:
+		fbo = fluid_fields.dye
+		output.texture_rd_rid = fbo._texture_rd
 		compute_shader = ComputeShader.new(fbo, SHADER_PATH)
