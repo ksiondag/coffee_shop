@@ -49,5 +49,6 @@ func uniform(binding: int) -> RDUniform:
 	uniform.add_id(_texture.texture_rd_rid)
 	return uniform
 
+
 func get_size() -> Vector2:
 	return _size

@@ -1,7 +1,11 @@
 extends TextureRect
 
+const FluidFields = preload("res://fluid/fluid_fields.gd")
+
 signal cursor_moved(uv: Vector2)
 signal view_resized(size: Vector2)
+
+@export var fluid_fields: FluidFields
 
 
 func _gui_input(event: InputEvent):
@@ -22,4 +26,5 @@ func _process(delta: float) -> void:
 
 
 func _on_resized() -> void:
-	emit_signal("view_resized", self.size)
+	view_resized.emit(self.size)
+	fluid_fields.initialize(self.size)
