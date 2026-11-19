@@ -19,8 +19,8 @@ func initialize(size: Vector2) -> void:
 	initialized = true
 	size = size
 
-	dye = FBO.new(null, size)
-	velocity = DoubleFBO.new(null, size)
-	divergence = FBO.new(null, size)
-	curl = FBO.new(null, size)
-	pressure = DoubleFBO.new(null, size)
+	dye = FBO.new(size)
+	velocity = DoubleFBO.new(size)
+	divergence = FBO.new(size)
+	curl = FBO.new(size)
+	pressure = DoubleFBO.new(size)

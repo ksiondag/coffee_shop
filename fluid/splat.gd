@@ -57,5 +57,5 @@ func _process(delta: float) -> void:
 func _on_view_resized(_size: Vector2) -> void:
 	if fbo == null && fluid_fields.initialized:
 		fbo = fluid_fields.dye
-		output.texture_rd_rid = fbo._texture_rd
+		fbo.set_texture(output)
 		compute_shader = ComputeShader.new(fbo, SHADER_PATH)

@@ -8,10 +8,17 @@ var _texture: Texture2DRD
 var _read: RID
 var _write: RID
 
-func _init(texture: Texture2DRD, size: Vector2):
+# TODO: Remove texture as input to _init function
+func _init(size: Vector2):
 	_size = size
-	_texture = texture
 
+	RenderingServer.call_on_render_thread(_initialize_texture)
+
+
+func set_texture(texture: Texture2DRD) -> void:
+	_texture = texture
+	# TODO: Dirty to reuse _initialize_texture like this, need to set
+	# texture_rd_rid in render thread
 	RenderingServer.call_on_render_thread(_initialize_texture)
 
 
@@ -34,6 +41,7 @@ func _initialize_texture() -> void:
 	if _texture != null:
 		_texture.texture_rd_rid = _read
 
+# TODO: set_texture and also properly handle the swap function for read/write
 
 func free() -> void:
 	if _texture.texture_rd_rid.is_valid():

@@ -5,10 +5,16 @@ var _size: Vector2
 var _texture: Texture2DRD
 
 
-func _init(texture: Texture2DRD, size: Vector2):
+func _init(size: Vector2):
 	_size = size
-	_texture = texture
 
+	RenderingServer.call_on_render_thread(_initialize_texture)
+
+
+func set_texture(texture: Texture2DRD) -> void:
+	_texture = texture
+	# TODO: Dirty to reuse _initialize_texture like this, need to set
+	# texture_rd_rid in render thread
 	RenderingServer.call_on_render_thread(_initialize_texture)
 
 
@@ -52,9 +58,12 @@ func _initialize_texture() -> void:
 		_initialized = false
 		return
 
-	_texture_rd = create_texture(_size)
+	if _texture_rd == null or not _texture_rd.is_valid():
+		_texture_rd = create_texture(_size)
+
 	if _texture:
 		_texture.texture_rd_rid = _texture_rd
+
 	_initialized = true
 
 
