@@ -2,7 +2,7 @@ extends Node
 
 const SHADER_PATH := "res://fluid/shaders/clear.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
-const FBO = preload("res://gpu/fbo.gd")
+const DoubleFBO = preload("res://gpu/double_fbo.gd")
 const FluidFields = preload("res://fluid/fluid_fields.gd")
 
 @export var fluid_fields: FluidFields
@@ -11,7 +11,7 @@ const FluidFields = preload("res://fluid/fluid_fields.gd")
 
 @export var color: Color
 
-var fbo: FBO
+var double_fbo: DoubleFBO
 var compute_shader: ComputeShader
 var texture_size: Vector2i
 
@@ -50,6 +50,6 @@ func _process(delta: float) -> void:
 
 func _on_view_resized(_size: Vector2) -> void:
 	if texture_size.y < 1.0 or texture_size.x < 1.0:
-		fbo = fluid_fields.dye
-		compute_shader = ComputeShader.new(fbo, SHADER_PATH)
+		double_fbo = fluid_fields.dye
+		compute_shader = ComputeShader.new(double_fbo, SHADER_PATH)
 		_clear()

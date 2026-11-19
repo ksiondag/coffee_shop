@@ -1,6 +1,6 @@
 class_name ComputeShader extends RefCounted
 
-const FBO = preload("res://gpu/fbo.gd")
+const DoubleFBO = preload("res://gpu/double_fbo.gd")
 
 # TODO: Should this be an abstract class?
 # Each compute shader will have its own I/O that needs to be handled
@@ -18,10 +18,11 @@ const GROUP_SIZE := 8
 
 # I think a good next step is writing down each thing
 
-var _output: FBO
+var _output: DoubleFBO
 
 
-func _init(output: FBO, shader_path: String) -> void:
+# TODO: Need a base GPUResources class that both DoubleFBO and FBO inherit?
+func _init(output: DoubleFBO, shader_path: String) -> void:
 	_output = output
 	RenderingServer.call_on_render_thread(_initialize_compute_code.bind(shader_path))
 
@@ -71,6 +72,8 @@ func _render_process(push_constant: PackedByteArray) -> void:
 
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
+	var uniform = _output.uniform(0)
+	uniform_set = rd.uniform_set_create([uniform], shader, 0)
 	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
 	rd.compute_list_set_push_constant(compute_list, push_constant, push_constant.size())
 	rd.compute_list_dispatch(compute_list, x_groups, y_groups, 1)

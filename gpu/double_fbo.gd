@@ -8,7 +8,6 @@ var _texture: Texture2DRD
 var _read: RID
 var _write: RID
 
-# TODO: Remove texture as input to _init function
 func _init(size: Vector2):
 	_size = size
 
@@ -36,12 +35,21 @@ func _initialize_texture() -> void:
 		push_error("Unexpected RID on texture: FBO will handle registering textures on GPU")
 		return
 
-	_read = FBO.create_texture(_size)
-	_write = FBO.create_texture(_size)
+	if _read == null or not _read.is_valid():
+		_read = FBO.create_texture(_size)
+	if _write == null or not _write.is_valid():
+		_write = FBO.create_texture(_size)
 	if _texture != null:
 		_texture.texture_rd_rid = _read
 
-# TODO: set_texture and also properly handle the swap function for read/write
+
+func swap() -> void:
+	var tmp = _read
+	_read = _write
+	_write = tmp
+
+	_texture.texture_rd_rid = _read
+
 
 func free() -> void:
 	if _texture.texture_rd_rid.is_valid():

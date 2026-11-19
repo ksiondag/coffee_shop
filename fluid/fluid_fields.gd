@@ -6,7 +6,7 @@ const DoubleFBO = preload("res://gpu/double_fbo.gd")
 var initialized: bool = false
 
 # TODO: This will be a double fbo once we have everything in place
-var dye: FBO
+var dye: DoubleFBO
 var velocity: DoubleFBO
 var divergence: FBO
 var curl: FBO
@@ -19,7 +19,7 @@ func initialize(size: Vector2) -> void:
 	initialized = true
 	size = size
 
-	dye = FBO.new(size)
+	dye = DoubleFBO.new(size)
 	velocity = DoubleFBO.new(size)
 	divergence = FBO.new(size)
 	curl = FBO.new(size)
