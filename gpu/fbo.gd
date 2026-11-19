@@ -1,4 +1,4 @@
-class_name FBO extends RefCounted
+class_name FBO extends GpuResources
 
 
 var _size: Vector2

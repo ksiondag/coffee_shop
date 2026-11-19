@@ -1,4 +1,4 @@
-class_name DoubleFBO extends RefCounted
+class_name DoubleFBO extends GpuResources
 
 const FBO = preload("res://gpu/fbo.gd")
 
