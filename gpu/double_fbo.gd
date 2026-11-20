@@ -5,8 +5,12 @@ const FBO = preload("res://gpu/fbo.gd")
 var _size: Vector2
 var _texture: Texture2DRD
 
-var _read: RID
-var _write: RID
+var _read_index = 0
+
+var _texture_rds: Array[RID] = [RID(), RID()];
+var _uniform_rds: Array[RID] = [RID(), RID()];
+var _uniform_set_rds: Array[RID] = [RID(), RID()];
+
 
 func _init(size: Vector2):
 	_size = size
@@ -17,7 +21,7 @@ func _init(size: Vector2):
 func set_texture(texture: Texture2DRD) -> void:
 	_texture = texture
 	# TODO: Dirty to reuse _initialize_texture like this, need to set
-	# texture_rd_rid in render thread
+	# texture_rd_rid in render thread?
 	RenderingServer.call_on_render_thread(_initialize_texture)
 
 
@@ -35,35 +39,37 @@ func _initialize_texture() -> void:
 		push_error("Unexpected RID on texture: FBO will handle registering textures on GPU")
 		return
 
-	if _read == null or not _read.is_valid():
-		_read = FBO.create_texture(_size)
-	if _write == null or not _write.is_valid():
-		_write = FBO.create_texture(_size)
+	var index = 0
+	while index < _texture_rds.size():
+		if not _texture_rds[index].is_valid():
+			_texture_rds[index] = FBO.create_texture(_size)
+		index += 1
+
 	if _texture != null:
-		_texture.texture_rd_rid = _read
+		_texture.texture_rd_rid = _texture_rds[_read_index]
 
 
 func swap() -> void:
-	var tmp = _read
-	_read = _write
-	_write = tmp
+	_read_index = (_read_index + 1) % _texture_rds.size()
 
-	_texture.texture_rd_rid = _read
+	if _texture != null:
+		_texture.texture_rd_rid = _texture_rds[_read_index]
 
 
 func free() -> void:
-	if _texture.texture_rd_rid.is_valid():
-		rd.free_rid(_texture.texture_rd_rid)
+	var index = 0
+	while index < _texture_rds.size():
+		if _texture_rds[index].is_valid():
+			rd.free_rid(_texture_rds[index])
+			_texture_rds[index] = RID()
+		index += 1
+
 	if _texture != null:
-		_texture.texture_rd_rid = RID()
+		_texture.texture_rd_rid = _texture_rds[_read_index]
 
 
-func uniform(binding: int) -> RDUniform:
-	var uniform := RDUniform.new()
-	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	uniform.binding = binding
-	uniform.add_id(_texture.texture_rd_rid)
-	return uniform
+func get_texture_rd() -> RID:
+	return _texture_rds[_read_index]
 
 
 func get_size() -> Vector2:

@@ -17,6 +17,10 @@ var double_fbo: DoubleFBO
 var compute_shader: ComputeShader
 var texture_size: Vector2i
 
+class SplatShader extends ComputeShader:
+	func set_uniform_sets() -> void:
+		print('here')
+
 
 func _input(event) -> void:
 	# TODO: temporary proof of swap functionality
@@ -61,4 +65,4 @@ func _on_view_resized(_size: Vector2) -> void:
 	if double_fbo == null && fluid_fields.initialized:
 		double_fbo = fluid_fields.dye
 		double_fbo.set_texture(output)
-		compute_shader = ComputeShader.new(double_fbo, SHADER_PATH)
+		compute_shader = SplatShader.new(double_fbo, SHADER_PATH)

@@ -7,8 +7,6 @@ const FluidFields = preload("res://fluid/fluid_fields.gd")
 
 @export var fluid_fields: FluidFields
 
-@export var output: Texture2DRD
-
 @export var color: Color
 
 var double_fbo: DoubleFBO

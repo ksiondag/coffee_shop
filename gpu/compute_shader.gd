@@ -9,14 +9,6 @@ const GPUResources = preload("res://gpu/gpu_resources.gd")
 # Must match local_size_x / local_size_y in the shader
 const GROUP_SIZE := 8
 
-# TODO: Texture output isn't always going to be the compute shader goal
-
-# Need a good means of defining I/O as we want to and for this shared code to DTRT
-# So, what I want to do here is have all GPU stuff live here and otherwise have
-# an API elsewhere for handling the handoff between user action, Godot, and GPU
-# work.
-
-# I think a good next step is writing down each thing
 
 var _output: GPUResources
 
@@ -34,11 +26,19 @@ func process(push_constant: PackedByteArray) -> void:
 	RenderingServer.call_on_render_thread(_render_process.bind(push_constant))
 
 
-# Rendering thread variables
+# Rendering thread variables and functions
 var rd: RenderingDevice
 var shader: RID
 var pipeline: RID
 var uniform_set: RID
+
+
+# TODO: These will be abstract but proofing this out
+func set_uniform_sets() -> void:
+	pass
+
+func set_push_constants() -> void:
+	pass
 
 
 func _initialize_compute_code(shader_path: String) -> void:
@@ -55,12 +55,18 @@ func _initialize_compute_code(shader_path: String) -> void:
 	shader = rd.shader_create_from_spirv(spirv)
 	pipeline = rd.compute_pipeline_create(shader)
 
-	var uniform = _output.uniform(0)
-	uniform_set = rd.uniform_set_create([uniform], shader, 0)
+
+func uniform(binding: int) -> RDUniform:
+	var uniform := RDUniform.new()
+	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+	uniform.binding = binding
+	uniform.add_id(_output.get_texture_rd())
+
+	return uniform
 
 
 func _render_process(push_constant: PackedByteArray) -> void:
-	if rd == null or not pipeline.is_valid() or not uniform_set.is_valid():
+	if rd == null or not pipeline.is_valid():
 		return
 
 	# Round up so partial groups at the edges are still covered (skip out-of-bounds pixels)
@@ -72,7 +78,12 @@ func _render_process(push_constant: PackedByteArray) -> void:
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
 
-	var uniform = _output.uniform(0)
+	# After these functions exist, delete below
+	set_uniform_sets()
+	set_push_constants()
+
+	# TODO: This uniform set setup as-is is a memory leak
+	var uniform = uniform(0)
 	uniform_set = rd.uniform_set_create([uniform], shader, 0)
 	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
 

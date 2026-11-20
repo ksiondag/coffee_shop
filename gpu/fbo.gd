@@ -77,12 +77,8 @@ func free() -> void:
 		_texture.texture_rd_rid = _texture_rd
 
 
-func uniform(binding: int) -> RDUniform:
-	var uniform := RDUniform.new()
-	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	uniform.binding = binding
-	uniform.add_id(_texture_rd)
-	return uniform
+func get_texture_rd() -> RID:
+	return _texture_rd
 
 
 func get_size() -> Vector2:
