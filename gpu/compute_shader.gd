@@ -34,11 +34,21 @@ var uniform_set: RID
 
 
 # TODO: These will be abstract but proofing this out
-func set_uniform_sets() -> void:
-	pass
+func set_uniform_sets(compute_list: int) -> void:
+	# TODO: This uniform set setup as-is is a memory leak
+	var uniform = uniform(0)
+	uniform_set = rd.uniform_set_create([uniform], shader, 0)
+	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
 
-func set_push_constants() -> void:
-	pass
+
+# TODO: This will not exist in final form but is scaffolding
+func uniform(binding: int) -> RDUniform:
+	var uniform := RDUniform.new()
+	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+	uniform.binding = binding
+	uniform.add_id(_output.get_texture_rd())
+
+	return uniform
 
 
 func _initialize_compute_code(shader_path: String) -> void:
@@ -56,15 +66,6 @@ func _initialize_compute_code(shader_path: String) -> void:
 	pipeline = rd.compute_pipeline_create(shader)
 
 
-func uniform(binding: int) -> RDUniform:
-	var uniform := RDUniform.new()
-	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
-	uniform.binding = binding
-	uniform.add_id(_output.get_texture_rd())
-
-	return uniform
-
-
 func _render_process(push_constant: PackedByteArray) -> void:
 	if rd == null or not pipeline.is_valid():
 		return
@@ -79,13 +80,7 @@ func _render_process(push_constant: PackedByteArray) -> void:
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
 
 	# After these functions exist, delete below
-	set_uniform_sets()
-	set_push_constants()
-
-	# TODO: This uniform set setup as-is is a memory leak
-	var uniform = uniform(0)
-	uniform_set = rd.uniform_set_create([uniform], shader, 0)
-	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
+	set_uniform_sets(compute_list)
 
 	rd.compute_list_set_push_constant(compute_list, push_constant, push_constant.size())
 	rd.compute_list_dispatch(compute_list, x_groups, y_groups, 1)

@@ -18,8 +18,7 @@ var compute_shader: ComputeShader
 var texture_size: Vector2i
 
 class SplatShader extends ComputeShader:
-	func set_uniform_sets() -> void:
-		print('here')
+	pass
 
 
 func _input(event) -> void:
