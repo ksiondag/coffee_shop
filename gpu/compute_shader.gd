@@ -1,4 +1,4 @@
-class_name ComputeShader extends RefCounted
+@abstract class_name ComputeShader extends RefCounted
 
 const GPUResources = preload("res://gpu/gpu_resources.gd")
 

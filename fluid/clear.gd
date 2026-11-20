@@ -13,6 +13,10 @@ var double_fbo: DoubleFBO
 var compute_shader: ComputeShader
 var texture_size: Vector2i
 
+
+class ClearShader extends ComputeShader:
+	pass
+
 func _clear() -> void:
 	# Must match the shader's Params block field for field: cursor, blue, padding (16 bytes)
 	var bytes := PackedFloat32Array([
@@ -49,5 +53,5 @@ func _process(delta: float) -> void:
 func _on_view_resized(_size: Vector2) -> void:
 	if texture_size.y < 1.0 or texture_size.x < 1.0:
 		double_fbo = fluid_fields.dye
-		compute_shader = ComputeShader.new(double_fbo, SHADER_PATH)
+		compute_shader = ClearShader.new(double_fbo, SHADER_PATH)
 		_clear()
