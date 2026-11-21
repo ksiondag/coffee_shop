@@ -18,16 +18,34 @@ var compute_shader: ComputeShader
 var texture_size: Vector2i
 
 class SplatShader extends ComputeShader:
-	pass
+	var _node
+	func _init(node, gpu_resource, shader_path) -> void:
+		super(gpu_resource, shader_path)
+		_node = node
+
+	func set_uniform_sets(rd: RenderingDevice, shader: RID, compute_list: int) -> void:
+		return _node.set_uniform_sets(rd, shader, compute_list)
+
+
+var uniform_set: RID
+func set_uniform_sets(rd: RenderingDevice, shader: RID, compute_list: int):
+	if uniform_set != null and uniform_set.is_valid():
+		rd.free_rid(uniform_set)
+	var uniform := RDUniform.new()
+	uniform.uniform_type = RenderingDevice.UNIFORM_TYPE_IMAGE
+	uniform.binding = 0
+	uniform.add_id(double_fbo.get_texture_rd())
+	uniform_set = rd.uniform_set_create([uniform], shader, 0)
+	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
 
 
 func _input(event) -> void:
 	# TODO: temporary proof of swap functionality
 	if event.is_action_pressed("space_bar"):
 		double_fbo.swap()
-	if event.is_action_pressed("click"):
-		# Must match the shader's Params block field for field: cursor, blue, padding (16 bytes)
-		var bytes := PackedFloat32Array([
+	if event.is_action_pressed("click") and compute_shader != null:
+		# Must match the shader's Params block field for field: cursor, blue, padding (16 push_constants)
+		var push_constants = PackedFloat32Array([
 			# color
 			color.r,
 			color.g,
@@ -41,8 +59,7 @@ func _input(event) -> void:
 			# padding
 			0.0
 		]).to_byte_array()
-		if compute_shader != null:
-			compute_shader.process(bytes)
+		compute_shader.process(push_constants)
 
 
 func _enter_tree() -> void:
@@ -64,4 +81,4 @@ func _on_view_resized(_size: Vector2) -> void:
 	if double_fbo == null && fluid_fields.initialized:
 		double_fbo = fluid_fields.dye
 		double_fbo.set_texture(output)
-		compute_shader = SplatShader.new(double_fbo, SHADER_PATH)
+		compute_shader = SplatShader.new(self, double_fbo, SHADER_PATH)

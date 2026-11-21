@@ -8,6 +8,7 @@ var _texture: Texture2DRD
 var _read_index = 0
 
 var _texture_rds: Array[RID] = [RID(), RID()];
+# TODO: don't use these variables anymore
 var _uniform_rds: Array[RID] = [RID(), RID()];
 var _uniform_set_rds: Array[RID] = [RID(), RID()];
 
