@@ -1,3 +1,4 @@
+class_name Curl
 extends RefCounted
 
 

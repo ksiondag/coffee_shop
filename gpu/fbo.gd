@@ -42,7 +42,9 @@ static func create_texture(size: Vector2) -> RID:
 	# TODO: Need to make this setable by calling code
 	tf.usage_bits = (
 		RenderingDevice.TEXTURE_USAGE_SAMPLING_BIT |
-		RenderingDevice.TEXTURE_USAGE_STORAGE_BIT
+		RenderingDevice.TEXTURE_USAGE_STORAGE_BIT |
+		RenderingDevice.TEXTURE_USAGE_CAN_UPDATE_BIT |
+		RenderingDevice.TEXTURE_USAGE_CAN_COPY_FROM_BIT
 	)
 	return rd.texture_create(tf, RDTextureView.new(), [])
 

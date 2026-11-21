@@ -4,3 +4,7 @@
 
 # nvim server socket file
 godothost
+
+# GdUnit4
+/reports
+/addons/gdUnit4/GdUnitRunner.cfg
