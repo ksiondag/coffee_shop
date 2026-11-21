@@ -69,7 +69,7 @@ func _initialize_texture() -> void:
 	_initialized = true
 
 
-func free() -> void:
+func release() -> void:
 	if not _initialized:
 		return
 	if _texture_rd.is_valid():

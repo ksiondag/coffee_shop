@@ -18,7 +18,7 @@ func _init(output: GPUResources, shader_path: String) -> void:
 	RenderingServer.call_on_render_thread(_initialize_compute_code.bind(shader_path))
 
 
-func free() -> void:
+func release() -> void:
 	RenderingServer.call_on_render_thread(_free_compute_resources)
 
 

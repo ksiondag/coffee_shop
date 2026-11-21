@@ -89,7 +89,7 @@ func _run_curl_test() -> void:
 		)
 
 	# Cleanup using your current helper's internal shader reference.
-	curl._compute_shader.free()
+	curl._compute_shader.release()
 	# Break the reference cycle between Curl and its CurlShader.
 	curl._compute_shader._node = null
 	_release_fields(fields)
@@ -98,11 +98,11 @@ func _run_curl_test() -> void:
 
 
 func _release_fields(fields: FluidFields) -> void:
-	fields.dye.free()
-	fields.velocity.free()
-	fields.divergence.free()
-	fields.curl.free()
-	fields.pressure.free()
+	fields.dye.release()
+	fields.velocity.release()
+	fields.divergence.release()
+	fields.curl.release()
+	fields.pressure.release()
 
 
 # Deferred calls run on the main thread.

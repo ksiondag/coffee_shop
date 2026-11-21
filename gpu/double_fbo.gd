@@ -57,7 +57,7 @@ func swap() -> void:
 		_texture.texture_rd_rid = _texture_rds[_read_index]
 
 
-func free() -> void:
+func release() -> void:
 	var index = 0
 	while index < _texture_rds.size():
 		if _texture_rds[index].is_valid():

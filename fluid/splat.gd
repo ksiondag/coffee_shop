@@ -68,7 +68,7 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	if compute_shader != null:
-		compute_shader.free()
+		compute_shader.release()
 	compute_shader = null
 
 

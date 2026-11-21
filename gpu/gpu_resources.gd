@@ -2,4 +2,4 @@
 
 @abstract func get_texture_rd() -> RID
 @abstract func get_size() -> Vector2
-@abstract func free() -> void
+@abstract func release() -> void
