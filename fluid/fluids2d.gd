@@ -1,18 +1,13 @@
 extends Node
 
-const FBO = preload("res://gpu/fbo.gd")
-const DoubleFBO = preload("res://gpu/double_fbo.gd")
 const FluidFields = preload("res://fluid/fluid_fields.gd")
-
+const Curl = preload("res://fluid/fluids2d/curl.gd")
 
 @export var fluid_fields: FluidFields
 
+var _initialized: bool = false
 
-var _dye: DoubleFBO
-var _velocity: DoubleFBO
-var _divergence: FBO
-var _curl: FBO
-var _pressure: DoubleFBO
+var _curl: Curl
 
 
 func _ready() -> void:
@@ -20,25 +15,22 @@ func _ready() -> void:
 
 
 func initialize() -> void:
-	_dye = fluid_fields.dye
-	_velocity = fluid_fields.velocity
-	_divergence = fluid_fields.divergence
-	_curl = fluid_fields.curl
-	_pressure = fluid_fields.pressure
+	_initialized = true
+	_curl = Curl.new(fluid_fields)
 
 
 func _process(delta: float) -> void:
-	if not fluid_fields.initialized:
+	if not _initialized:
 		return
 	_step(delta)
 
 
 func _step(delta: float) -> void:
-	pass
+	_curl.process(delta)
 
 
 func _on_view_resized(_size: Vector2) -> void:
 	# TODO: There's a better way to do this initialize, but this works for now
 	# Changing it later does not affect the overall implementation setup
-	if _dye == null:
+	if fluid_fields.initialized and not _initialized:
 		initialize()
