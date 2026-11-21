@@ -17,7 +17,6 @@ void main() {
 		return;
 	}
 
-	// TODO: What do I do with edges? clamp suffices
 	float left_v = imageLoad(velocity_image, clamp(pixel - ivec2(1, 0), zero, size)).y;
 	float right_v = imageLoad(velocity_image, clamp(pixel + ivec2(1, 0), zero, size)).y;
 	float up_v = imageLoad(velocity_image, clamp(pixel + ivec2(0, 1), zero, size)).x;
