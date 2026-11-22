@@ -3,6 +3,7 @@ extends Node
 const FluidFields = preload("res://fluid/fluid_fields.gd")
 const Curl = preload("res://fluid/fluids2d/curl.gd")
 const Vorticity = preload("res://fluid/fluids2d/vorticity.gd")
+const Divergence = preload("res://fluid/fluids2d/divergence.gd")
 
 @export var fluid_fields: FluidFields
 
@@ -10,6 +11,7 @@ var _initialized: bool = false
 
 var _curl: Curl
 var _vorticity: Vorticity
+var _divergence: Divergence
 
 
 func _ready() -> void:
@@ -20,6 +22,7 @@ func initialize() -> void:
 	_initialized = true
 	_curl = Curl.new(fluid_fields)
 	_vorticity = Vorticity.new(fluid_fields)
+	_divergence = Divergence.new(fluid_fields)
 
 
 func _process(delta: float) -> void:
@@ -31,6 +34,7 @@ func _process(delta: float) -> void:
 func _step(delta: float) -> void:
 	_curl.process(delta)
 	_vorticity.process(delta)
+	_divergence.process(delta)
 
 
 func _on_view_resized(_size: Vector2) -> void:

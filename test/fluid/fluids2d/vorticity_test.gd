@@ -4,7 +4,6 @@ const Vorticity = preload("res://fluid/fluids2d/vorticity.gd")
 const TEST_SIZE := Vector2i(8, 8)
 const TIMEOUT_MS := 5000
 const TOLERANCE := 0.005
-# Matches the current hardcoded confinement strength in Vorticity.process().
 const STRENGTH := 30.0
 const NORMALIZATION_EPSILON := 0.0001
 
@@ -93,7 +92,6 @@ func test_force_scales_with_delta() -> void:
 
 func test_consecutive_passes_follow_velocity_swaps() -> void:
 	var initial := Vector2(2.0, -3.0)
-	# Same pass instance and textures, but a different curl field per dispatch.
 	var results := await _run_vorticity(
 		_constant_image(TEST_SIZE, Color(initial.x, initial.y, 0.0, 1.0)),
 		[_curl_ramp(TEST_SIZE, true), _curl_ramp(TEST_SIZE, false)], 0.01
