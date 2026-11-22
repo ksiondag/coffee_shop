@@ -6,9 +6,6 @@ const SHADER_PATH := "res://fluid/shaders/curl.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
 const FBO = preload("res://gpu/fbo.gd")
-const FluidFields = preload("res://fluid/fluid_fields.gd")
-
-@export var fluid_fields: FluidFields
 
 @export var output: Texture2DRD
 @export var color: Color
@@ -53,9 +50,9 @@ func set_uniform_sets(rd: RenderingDevice, shader: RID, compute_list: int):
 	rd.compute_list_bind_uniform_set(compute_list, curl_uniform_set, 1)
 
 
-func _init(fluid_fields: FluidFields) -> void:
-	_curl = fluid_fields.curl
-	_velocity = fluid_fields.velocity
+func _init(velocity: DoubleFBO, curl: FBO) -> void:
+	_velocity = velocity
+	_curl = curl
 	_compute_shader = CurlShader.new(self, _curl, SHADER_PATH)
 
 

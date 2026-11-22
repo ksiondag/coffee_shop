@@ -5,7 +5,6 @@ extends RefCounted
 const SHADER_PATH := "res://fluid/shaders/gradient_subtract.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
-const FluidFields = preload("res://fluid/fluid_fields.gd")
 
 var _pressure: DoubleFBO
 var _velocity: DoubleFBO
@@ -55,9 +54,9 @@ func set_uniform_sets(rd: RenderingDevice, shader: RID, compute_list: int):
 	rd.compute_list_bind_uniform_set(compute_list, velocity_write_uniform_set, 2)
 
 
-func _init(fluid_fields: FluidFields) -> void:
-	_pressure = fluid_fields.pressure
-	_velocity = fluid_fields.velocity
+func _init(pressure: DoubleFBO, velocity: DoubleFBO) -> void:
+	_pressure = pressure
+	_velocity = velocity
 	_compute_shader = GradientSubtractShader.new(self, _velocity, SHADER_PATH)
 
 

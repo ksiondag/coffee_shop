@@ -6,7 +6,6 @@ const SHADER_PATH := "res://fluid/shaders/divergence.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
 const FBO = preload("res://gpu/fbo.gd")
-const FluidFields = preload("res://fluid/fluid_fields.gd")
 
 var _divergence: FBO
 var _velocity: DoubleFBO
@@ -46,9 +45,9 @@ func set_uniform_sets(rd: RenderingDevice, shader: RID, compute_list: int):
 	rd.compute_list_bind_uniform_set(compute_list, divergence_uniform_set, 1)
 
 
-func _init(fluid_fields: FluidFields) -> void:
-	_divergence = fluid_fields.divergence
-	_velocity = fluid_fields.velocity
+func _init(velocity: DoubleFBO, divergence: FBO) -> void:
+	_velocity = velocity
+	_divergence = divergence
 	_compute_shader = DivergenceShader.new(self, _divergence, SHADER_PATH)
 
 

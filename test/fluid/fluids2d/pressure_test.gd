@@ -141,9 +141,9 @@ func _run_on_render_thread(divergence: Image, pressure: Image, iterations: int, 
 		return
 
 	var size := divergence.get_size()
-	var fields := FluidFields.new()
-	fields.initialize(Vector2(size))
-	var solver := Pressure.new(fields)
+	var divergence_fbo := FBO.new(Vector2(size))
+	var pressure_fbo := DoubleFBO.new(Vector2(size))
+	var solver := Pressure.new(divergence_fbo, pressure_fbo)
 	solver.iterations = iterations
 	var results: Array[Image] = []
 	var message := ""
@@ -152,22 +152,22 @@ func _run_on_render_thread(divergence: Image, pressure: Image, iterations: int, 
 	sentinel.fill(Color(99.0, 99.0, 99.0, 0.0))
 
 	var upload_error := rd.texture_update(
-		fields.divergence.get_texture_rd(), 0, divergence.get_data()
+		divergence_fbo.get_texture_rd(), 0, divergence.get_data()
 	)
 	if upload_error == OK:
 		upload_error = rd.texture_update(
-			fields.pressure.get_texture_rd(), 0, pressure.get_data()
+			pressure_fbo.get_texture_rd(), 0, pressure.get_data()
 		)
 	if upload_error == OK:
 		upload_error = rd.texture_update(
-			fields.pressure.get_write_texture_rd(), 0, sentinel.get_data()
+			pressure_fbo.get_write_texture_rd(), 0, sentinel.get_data()
 		)
 
 	if upload_error != OK:
 		message = "Texture upload failed: %s" % error_string(upload_error)
 	else:
 		solver.process(0.0)
-		var bytes := rd.texture_get_data(fields.pressure.get_texture_rd(), 0)
+		var bytes := rd.texture_get_data(pressure_fbo.get_texture_rd(), 0)
 		if bytes.is_empty():
 			message = "Pressure readback returned no data."
 		else:
@@ -177,11 +177,8 @@ func _run_on_render_thread(divergence: Image, pressure: Image, iterations: int, 
 
 	solver._compute_shader.release()
 	solver._compute_shader._node = null
-	fields.dye.release()
-	fields.velocity.release()
-	fields.divergence.release()
-	fields.curl.release()
-	fields.pressure.release()
+	divergence_fbo.release()
+	pressure_fbo.release()
 	_receive_result.call_deferred(state, results, message)
 
 

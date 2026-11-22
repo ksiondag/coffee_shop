@@ -181,21 +181,18 @@ func _run_on_render_thread(
 		_receive_result.call_deferred(state, [], "No RenderingDevice available.")
 		return
 
-	var fields := FluidFields.new()
-	fields.initialize(Vector2(velocity.get_size()))
+	var velocity_fbo := DoubleFBO.new(Vector2(velocity.get_size()))
 
-	# Pick the field being advected: velocity itself, dye, or a differently sized
-	# DoubleFBO standing in for a higher-resolution dye.
-	var target: DoubleFBO = fields.dye
-	var extra_target: DoubleFBO = null
-	if source == null:
-		target = fields.velocity
-	elif source.get_size() != velocity.get_size():
-		extra_target = DoubleFBO.new(Vector2(source.get_size()))
-		target = extra_target
+	# Pick the field being advected: velocity itself, or a separate DoubleFBO
+	# (possibly a different size) standing in for dye.
 	var target_size := velocity.get_size() if source == null else source.get_size()
+	var source_fbo: DoubleFBO = null
+	var target := velocity_fbo
+	if source != null:
+		source_fbo = DoubleFBO.new(Vector2(target_size))
+		target = source_fbo
 
-	var advection := Advection.new(fields, target, dissipation)
+	var advection := Advection.new(velocity_fbo, target, dissipation)
 	var results: Array[Image] = []
 	var message := ""
 
@@ -203,7 +200,7 @@ func _run_on_render_thread(
 	sentinel.fill(Color(99.0, 99.0, 99.0, 0.0))
 
 	var upload_error := rd.texture_update(
-		fields.velocity.get_texture_rd(), 0, velocity.get_data()
+		velocity_fbo.get_texture_rd(), 0, velocity.get_data()
 	)
 	if upload_error == OK and source != null:
 		upload_error = rd.texture_update(target.get_texture_rd(), 0, source.get_data())
@@ -231,13 +228,9 @@ func _run_on_render_thread(
 
 	advection._compute_shader.release()
 	advection._compute_shader._node = null
-	if extra_target != null:
-		extra_target.release()
-	fields.dye.release()
-	fields.velocity.release()
-	fields.divergence.release()
-	fields.curl.release()
-	fields.pressure.release()
+	if source_fbo != null:
+		source_fbo.release()
+	velocity_fbo.release()
 	_receive_result.call_deferred(state, results, message)
 
 

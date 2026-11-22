@@ -6,7 +6,6 @@ const SHADER_PATH := "res://fluid/shaders/pressure.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
 const FBO = preload("res://gpu/fbo.gd")
-const FluidFields = preload("res://fluid/fluid_fields.gd")
 
 # TODO: This is a config value, when porting over config numbers
 var iterations: int = 20
@@ -60,9 +59,9 @@ func set_uniform_sets(rd: RenderingDevice, shader: RID, compute_list: int):
 	rd.compute_list_bind_uniform_set(compute_list, pressure_write_uniform_set, 2)
 
 
-func _init(fluid_fields: FluidFields) -> void:
-	_divergence = fluid_fields.divergence
-	_pressure = fluid_fields.pressure
+func _init(divergence: FBO, pressure: DoubleFBO) -> void:
+	_divergence = divergence
+	_pressure = pressure
 	_compute_shader = PressureShader.new(self, _pressure, SHADER_PATH)
 
 

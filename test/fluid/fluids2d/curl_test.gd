@@ -158,9 +158,9 @@ func _run_on_render_thread(velocities: Array[Image], state: Dictionary) -> void:
 		return
 
 	var size := velocities[0].get_size()
-	var fields := FluidFields.new()
-	fields.initialize(Vector2(size))
-	var curl := Curl.new(fields)
+	var velocity_fbo := DoubleFBO.new(Vector2(size))
+	var curl_fbo := FBO.new(Vector2(size))
+	var curl := Curl.new(velocity_fbo, curl_fbo)
 	var results: Array[Image] = []
 	var message := ""
 
@@ -170,21 +170,21 @@ func _run_on_render_thread(velocities: Array[Image], state: Dictionary) -> void:
 
 	for index in range(velocities.size()):
 		if index > 0:
-			fields.velocity.swap()
+			velocity_fbo.swap()
 
 		var upload_error := rd.texture_update(
-			fields.velocity.get_texture_rd(), 0, velocities[index].get_data()
+			velocity_fbo.get_texture_rd(), 0, velocities[index].get_data()
 		)
 		if upload_error == OK:
 			upload_error = rd.texture_update(
-				fields.curl.get_texture_rd(), 0, initial_curl.get_data()
+				curl_fbo.get_texture_rd(), 0, initial_curl.get_data()
 			)
 		if upload_error != OK:
 			message = "Texture upload failed: %s" % error_string(upload_error)
 			break
 
 		curl.process(0.0)
-		var bytes := rd.texture_get_data(fields.curl.get_texture_rd(), 0)
+		var bytes := rd.texture_get_data(curl_fbo.get_texture_rd(), 0)
 		if bytes.is_empty():
 			message = "curl bytes unexpectedly empty"
 			break
@@ -194,11 +194,8 @@ func _run_on_render_thread(velocities: Array[Image], state: Dictionary) -> void:
 
 	curl._compute_shader.release()
 	curl._compute_shader._node = null
-	fields.dye.release()
-	fields.velocity.release()
-	fields.divergence.release()
-	fields.curl.release()
-	fields.pressure.release()
+	velocity_fbo.release()
+	curl_fbo.release()
 
 	_receive_result.call_deferred(state, results, message)
 

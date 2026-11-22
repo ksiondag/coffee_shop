@@ -182,9 +182,9 @@ func _run_on_render_thread(velocities: Array[Image], state: Dictionary) -> void:
 		return
 
 	var size := velocities[0].get_size()
-	var fields := FluidFields.new()
-	fields.initialize(Vector2(size))
-	var divergence := Divergence.new(fields)
+	var velocity_fbo := DoubleFBO.new(Vector2(size))
+	var divergence_fbo := FBO.new(Vector2(size))
+	var divergence := Divergence.new(velocity_fbo, divergence_fbo)
 	var results: Array[Image] = []
 	var message := ""
 
@@ -193,21 +193,21 @@ func _run_on_render_thread(velocities: Array[Image], state: Dictionary) -> void:
 
 	for index in range(velocities.size()):
 		if index > 0:
-			fields.velocity.swap()
+			velocity_fbo.swap()
 
 		var upload_error := rd.texture_update(
-			fields.velocity.get_texture_rd(), 0, velocities[index].get_data()
+			velocity_fbo.get_texture_rd(), 0, velocities[index].get_data()
 		)
 		if upload_error == OK:
 			upload_error = rd.texture_update(
-				fields.divergence.get_texture_rd(), 0, initial_divergence.get_data()
+				divergence_fbo.get_texture_rd(), 0, initial_divergence.get_data()
 			)
 		if upload_error != OK:
 			message = "Texture upload failed: %s" % error_string(upload_error)
 			break
 
 		divergence.process(0.0)
-		var bytes := rd.texture_get_data(fields.divergence.get_texture_rd(), 0)
+		var bytes := rd.texture_get_data(divergence_fbo.get_texture_rd(), 0)
 		if bytes.is_empty():
 			message = "Divergence readback returned no data."
 			break
@@ -217,11 +217,8 @@ func _run_on_render_thread(velocities: Array[Image], state: Dictionary) -> void:
 
 	divergence._compute_shader.release()
 	divergence._compute_shader._node = null
-	fields.dye.release()
-	fields.velocity.release()
-	fields.divergence.release()
-	fields.curl.release()
-	fields.pressure.release()
+	velocity_fbo.release()
+	divergence_fbo.release()
 
 	_receive_result.call_deferred(state, results, message)
 

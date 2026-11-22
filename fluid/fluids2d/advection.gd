@@ -5,7 +5,6 @@ extends RefCounted
 const SHADER_PATH := "res://fluid/shaders/advection.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
-const FluidFields = preload("res://fluid/fluid_fields.gd")
 
 # TODO: These are config values (Pavel's VELOCITY_DISSIPATION / DENSITY_DISSIPATION),
 # when porting over config numbers
@@ -63,11 +62,9 @@ func set_uniform_sets(rd: RenderingDevice, shader: RID, compute_list: int):
 	rd.compute_list_bind_uniform_set(compute_list, source_write_uniform_set, 2)
 
 
-# source is the field being carried: fluid_fields.velocity or fluid_fields.dye.
-# TODO: This reveals a weakness in the template I've been following
-# Each of these fluids2d classes are given the whole of fluid fields, that's bad coupling
-func _init(fluid_fields: FluidFields, source: DoubleFBO, source_dissipation: float) -> void:
-	_velocity = fluid_fields.velocity
+# source is the field being carried: velocity itself, or dye.
+func _init(velocity: DoubleFBO, source: DoubleFBO, source_dissipation: float) -> void:
+	_velocity = velocity
 	_source = source
 	dissipation = source_dissipation
 	# The dispatch covers the source, which may differ in size from velocity.

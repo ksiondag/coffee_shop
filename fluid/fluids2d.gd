@@ -29,16 +29,20 @@ func _ready() -> void:
 
 func initialize() -> void:
 	_initialized = true
-	_curl = Curl.new(fluid_fields)
-	_vorticity = Vorticity.new(fluid_fields)
-	_divergence = Divergence.new(fluid_fields)
-	_pressure_decay = PressureDecay.new(fluid_fields)
-	_pressure = Pressure.new(fluid_fields)
-	_gradient_subtract = GradientSubtract.new(fluid_fields)
-	_velocity_advection = Advection.new(
-		fluid_fields, fluid_fields.velocity, Advection.VELOCITY_DISSIPATION
-	)
-	_dye_advection = Advection.new(fluid_fields, fluid_fields.dye, Advection.DYE_DISSIPATION)
+	var velocity := fluid_fields.velocity
+	var dye := fluid_fields.dye
+	var curl := fluid_fields.curl
+	var divergence := fluid_fields.divergence
+	var pressure := fluid_fields.pressure
+
+	_curl = Curl.new(velocity, curl)
+	_vorticity = Vorticity.new(velocity, curl)
+	_divergence = Divergence.new(velocity, divergence)
+	_pressure_decay = PressureDecay.new(pressure)
+	_pressure = Pressure.new(divergence, pressure)
+	_gradient_subtract = GradientSubtract.new(pressure, velocity)
+	_velocity_advection = Advection.new(velocity, velocity, Advection.VELOCITY_DISSIPATION)
+	_dye_advection = Advection.new(velocity, dye, Advection.DYE_DISSIPATION)
 
 
 func _process(delta: float) -> void:

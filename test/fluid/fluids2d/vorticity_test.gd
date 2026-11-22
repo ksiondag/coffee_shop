@@ -177,34 +177,34 @@ func _run_on_render_thread(velocity: Image, curls: Array[Image], delta: float, s
 		return
 
 	var size := velocity.get_size()
-	var fields := FluidFields.new()
-	fields.initialize(Vector2(size))
-	var vorticity := Vorticity.new(fields)
+	var velocity_fbo := DoubleFBO.new(Vector2(size))
+	var curl_fbo := FBO.new(Vector2(size))
+	var vorticity := Vorticity.new(velocity_fbo, curl_fbo)
 	var results: Array[Image] = []
 	var message := ""
 	var sentinel := _constant_image(size, Color(99.0, 99.0, 99.0, 0.0))
 	var upload_error := rd.texture_update(
-		fields.velocity.get_texture_rd(), 0, velocity.get_data()
+		velocity_fbo.get_texture_rd(), 0, velocity.get_data()
 	)
 
 	for curl_image in curls:
 		if upload_error == OK:
-			upload_error = rd.texture_update(fields.curl.get_texture_rd(), 0, curl_image.get_data())
+			upload_error = rd.texture_update(curl_fbo.get_texture_rd(), 0, curl_image.get_data())
 		if upload_error == OK:
 			upload_error = rd.texture_update(
-				fields.velocity.get_write_texture_rd(), 0, sentinel.get_data()
+				velocity_fbo.get_write_texture_rd(), 0, sentinel.get_data()
 			)
 		if upload_error != OK:
 			message = "Texture upload failed: %s" % error_string(upload_error)
 			break
 
-		var previous_read := fields.velocity.get_texture_rd()
+		var previous_read := velocity_fbo.get_texture_rd()
 		vorticity.process(delta)
-		if previous_read == fields.velocity.get_texture_rd():
+		if previous_read == velocity_fbo.get_texture_rd():
 			message = "Vorticity did not swap the velocity textures"
 			break
 
-		var bytes := rd.texture_get_data(fields.velocity.get_texture_rd(), 0)
+		var bytes := rd.texture_get_data(velocity_fbo.get_texture_rd(), 0)
 		if bytes.is_empty():
 			message = "Vorticity readback returned no data"
 			break
@@ -214,11 +214,8 @@ func _run_on_render_thread(velocity: Image, curls: Array[Image], delta: float, s
 
 	vorticity._compute_shader.release()
 	vorticity._compute_shader._node = null
-	fields.dye.release()
-	fields.velocity.release()
-	fields.divergence.release()
-	fields.curl.release()
-	fields.pressure.release()
+	velocity_fbo.release()
+	curl_fbo.release()
 	_receive_result.call_deferred(state, results, message)
 
 

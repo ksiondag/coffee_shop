@@ -5,7 +5,6 @@ extends RefCounted
 const SHADER_PATH := "res://fluid/shaders/pressure_decay.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
-const FluidFields = preload("res://fluid/fluid_fields.gd")
 
 # TODO: This is a config value, when porting over config numbers
 var value: float = 0.8
@@ -47,8 +46,8 @@ func set_uniform_sets(rd: RenderingDevice, shader: RID, compute_list: int):
 	rd.compute_list_bind_uniform_set(compute_list, pressure_write_uniform_set, 1)
 
 
-func _init(fluid_fields: FluidFields) -> void:
-	_pressure = fluid_fields.pressure
+func _init(pressure: DoubleFBO) -> void:
+	_pressure = pressure
 	_compute_shader = PressureDecayShader.new(self, _pressure, SHADER_PATH)
 
 
