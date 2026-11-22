@@ -4,6 +4,8 @@ const Vorticity = preload("res://fluid/fluids2d/vorticity.gd")
 const TEST_SIZE := Vector2i(8, 8)
 const TIMEOUT_MS := 5000
 const TOLERANCE := 0.005
+# Set explicitly on the pass so the tests don't depend on the config default.
+# Large enough that the force stands well clear of the half-float tolerance.
 const STRENGTH := 30.0
 const NORMALIZATION_EPSILON := 0.0001
 
@@ -180,6 +182,7 @@ func _run_on_render_thread(velocity: Image, curls: Array[Image], delta: float, s
 	var velocity_fbo := DoubleFBO.new(Vector2(size))
 	var curl_fbo := FBO.new(Vector2(size))
 	var vorticity := Vorticity.new(velocity_fbo, curl_fbo)
+	vorticity.strength = STRENGTH
 	var results: Array[Image] = []
 	var message := ""
 	var sentinel := _constant_image(size, Color(99.0, 99.0, 99.0, 0.0))

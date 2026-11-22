@@ -12,6 +12,9 @@ const FBO = preload("res://gpu/fbo.gd")
 
 @export var radius: float
 
+# TODO: This is a config value (CURL)
+var strength: float = 1.0
+
 var _curl: FBO
 var _velocity: DoubleFBO
 var _compute_shader: ComputeShader
@@ -71,9 +74,7 @@ func _init(velocity: DoubleFBO, curl: FBO) -> void:
 func process(delta: float) -> void:
 	var push_constants = PackedFloat32Array([
 		# curl constant
-		# TODO: This is a config value, when porting over config numbers
-		# Picking default value for now
-		30.0,
+		strength,
 		# delta time
 		delta
 	]).to_byte_array()
