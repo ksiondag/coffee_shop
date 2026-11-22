@@ -24,13 +24,16 @@ func test_zero_delta_neither_moves_nor_decays() -> void:
 	_assert_color(results[0], func(x: int, y: int) -> Color: return _ramp(x, y))
 
 
-func test_dissipation_divides_every_channel() -> void:
+func test_dissipation_divides_color_but_not_alpha() -> void:
 	var results := await _run_advection(
 		_velocity_image(TEST_SIZE, Vector2.ZERO), _source_ramp(TEST_SIZE), 0.5, 0.5
 	)
 	if results.is_empty():
 		return
-	_assert_color(results[0], func(x: int, y: int) -> Color: return _ramp(x, y) / 1.25)
+	_assert_color(results[0], func(x: int, y: int) -> Color:
+		var color := _ramp(x, y)
+		return Color(color.r / 1.25, color.g / 1.25, color.b / 1.25, color.a)
+	)
 
 
 func test_positive_x_velocity_moves_source_in_positive_x() -> void:
@@ -184,7 +187,7 @@ func _run_on_render_thread(
 	var velocity_fbo := DoubleFBO.new(Vector2(velocity.get_size()))
 
 	# Pick the field being advected: velocity itself, or a separate DoubleFBO
-	# (possibly a different size) standing in for dye.
+	# (possibly a different size) standing in for dye
 	var target_size := velocity.get_size() if source == null else source.get_size()
 	var source_fbo: DoubleFBO = null
 	var target := velocity_fbo

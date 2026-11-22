@@ -58,5 +58,5 @@ void main() {
 
 	vec4 result = bilerp_source(coord);
 	float decay = 1.0 + params.dissipation * params.delta;
-	imageStore(source_write_image, pixel, result / decay);
+	imageStore(source_write_image, pixel, vec4(result.rgb / decay, result.a));
 }
