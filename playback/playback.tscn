@@ -1,0 +1,45 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://playback/playback_scene.gd" id="1_scene"]
+[ext_resource type="Script" path="res://playback/playback.gd" id="2_playback"]
+[ext_resource type="Resource" path="res://playback/latte_recording.tres" id="3_recording"]
+[ext_resource type="Script" path="res://fluid/fluids2d.gd" id="4_fluids2d"]
+
+[sub_resource type="Texture2DRD" id="Texture2DRD_dye"]
+
+[node name="PlaybackScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_scene")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="View" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("Texture2DRD_dye")
+expand_mode = 1
+stretch_mode = 5
+flip_v = true
+
+[node name="Playback" type="Node" parent="."]
+script = ExtResource("2_playback")
+recording = ExtResource("3_recording")
+
+[node name="Fluids2D" type="Node" parent="."]
+script = ExtResource("4_fluids2d")

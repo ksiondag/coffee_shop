@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://bbgby35uqidql"
+path="res://.godot/imported/gaussian_splat.glsl-9dcd8f0ce4f19b9a546eb85dbecdaff8.res"
+
+[deps]
+
+source_file="res://fluid/shaders/gaussian_splat.glsl"
+dest_files=["res://.godot/imported/gaussian_splat.glsl-9dcd8f0ce4f19b9a546eb85dbecdaff8.res"]
+
+[params]
+
