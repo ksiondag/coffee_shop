@@ -69,6 +69,7 @@ func _process(delta: float) -> void:
 
 
 func _on_view_resized(_size: Vector2) -> void:
-	double_fbo = fluid_fields.dye
-	compute_shader = ClearShader.new(self, double_fbo, SHADER_PATH)
-	_clear()
+	if double_fbo == null && fluid_fields.initialized:
+		double_fbo = fluid_fields.dye
+		compute_shader = ClearShader.new(self, double_fbo, SHADER_PATH)
+		_clear()

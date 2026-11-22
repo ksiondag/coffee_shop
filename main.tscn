@@ -42,7 +42,6 @@ radius = 22.0
 [node name="Clear" type="Node" parent="." unique_id=1494218191]
 script = ExtResource("3_1bvp3")
 fluid_fields = SubResource("Resource_1bvp3")
-output = SubResource("Texture2DRD_5c1er")
 color = Color(0.29101217, 0.11783331, 0.058995835, 1)
 
 [node name="Fluids2D" type="Node" parent="." unique_id=1386665208]
@@ -52,3 +51,4 @@ fluid_fields = SubResource("Resource_1bvp3")
 [connection signal="resized" from="View" to="View" method="_on_resized"]
 [connection signal="view_resized" from="View" to="Splat" method="_on_view_resized"]
 [connection signal="view_resized" from="View" to="Clear" method="_on_view_resized"]
+[connection signal="view_resized" from="View" to="Fluids2D" method="_on_view_resized"]
