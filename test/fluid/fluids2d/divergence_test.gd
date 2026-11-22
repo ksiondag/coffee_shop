@@ -215,8 +215,7 @@ func _run_on_render_thread(velocities: Array[Image], state: Dictionary) -> void:
 			size.x, size.y, false, Image.FORMAT_RGBAH, bytes
 		))
 
-	divergence._compute_shader.release()
-	divergence._compute_shader._node = null
+	divergence.release()
 	velocity_fbo.release()
 	divergence_fbo.release()
 

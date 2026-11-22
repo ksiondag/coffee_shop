@@ -81,4 +81,11 @@ func process(delta: float) -> void:
 	_velocity.swap()
 
 
+# Frees the GPU resources and breaks the reference cycle between this pass and
+# its shader (_node), so both can be freed.
+func release() -> void:
+	_compute_shader.release()
+	_compute_shader._node = null
+
+
 # RenderingThread functions

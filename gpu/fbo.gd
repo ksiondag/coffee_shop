@@ -70,13 +70,19 @@ func _initialize_texture() -> void:
 
 
 func release() -> void:
+	# Detach the displayed texture before its RID is freed
+	if _texture != null:
+		_texture.texture_rd_rid = RID()
+	RenderingServer.call_on_render_thread(_free_texture)
+
+
+func _free_texture() -> void:
 	if not _initialized:
 		return
 	if _texture_rd.is_valid():
 		rd.free_rid(_texture_rd)
 	_texture_rd = RID()
-	if _texture != null:
-		_texture.texture_rd_rid = _texture_rd
+	_initialized = false
 
 
 func get_texture_rd() -> RID:

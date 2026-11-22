@@ -155,8 +155,7 @@ func _run_on_render_thread(pressure: Image, dispatches: int, state: Dictionary) 
 			size.x, size.y, false, Image.FORMAT_RGBAH, bytes
 		))
 
-	decay._compute_shader.release()
-	decay._compute_shader._node = null
+	decay.release()
 	pressure_fbo.release()
 	_receive_result.call_deferred(state, results, message)
 

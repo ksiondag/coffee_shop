@@ -45,6 +45,18 @@ func initialize() -> void:
 	_dye_advection = Advection.new(velocity, dye, Advection.DYE_DISSIPATION)
 
 
+func _exit_tree() -> void:
+	if _initialized:
+		for fluid_pass in [
+			_curl, _vorticity, _divergence, _pressure_decay, _pressure,
+			_gradient_subtract, _velocity_advection, _dye_advection,
+		]:
+			fluid_pass.release()
+		_initialized = false
+	# Fluids2D owns the shared fields, so it frees them for every node using them
+	fluid_fields.release()
+
+
 func _process(delta: float) -> void:
 	if not _initialized:
 		return

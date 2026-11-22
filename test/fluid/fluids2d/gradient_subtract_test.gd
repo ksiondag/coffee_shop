@@ -216,8 +216,7 @@ func _run_on_render_thread(velocity: Image, pressures: Array[Image], state: Dict
 			size.x, size.y, false, Image.FORMAT_RGBAH, bytes
 		))
 
-	gradient_subtract._compute_shader.release()
-	gradient_subtract._compute_shader._node = null
+	gradient_subtract.release()
 	pressure_fbo.release()
 	velocity_fbo.release()
 	_receive_result.call_deferred(state, results, message)

@@ -212,8 +212,7 @@ func _run_on_render_thread(velocity: Image, curls: Array[Image], delta: float, s
 			size.x, size.y, false, Image.FORMAT_RGBAH, bytes
 		))
 
-	vorticity._compute_shader.release()
-	vorticity._compute_shader._node = null
+	vorticity.release()
 	velocity_fbo.release()
 	curl_fbo.release()
 	_receive_result.call_deferred(state, results, message)

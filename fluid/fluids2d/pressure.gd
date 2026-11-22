@@ -69,3 +69,10 @@ func process(_delta: float) -> void:
 	for i in range(iterations):
 		_compute_shader.process([])
 		_pressure.swap()
+
+
+# Frees the GPU resources and breaks the reference cycle between this pass and
+# its shader (_node), so both can be freed.
+func release() -> void:
+	_compute_shader.release()
+	_compute_shader._node = null

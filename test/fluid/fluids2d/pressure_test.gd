@@ -175,8 +175,7 @@ func _run_on_render_thread(divergence: Image, pressure: Image, iterations: int, 
 				size.x, size.y, false, Image.FORMAT_RGBAH, bytes
 			))
 
-	solver._compute_shader.release()
-	solver._compute_shader._node = null
+	solver.release()
 	divergence_fbo.release()
 	pressure_fbo.release()
 	_receive_result.call_deferred(state, results, message)

@@ -16,11 +16,30 @@ var size: Vector2 = Vector2(0, 0)
 
 
 func initialize(size: Vector2) -> void:
+	# Fields are created once; resizing them is not supported yet
+	if initialized:
+		return
 	initialized = true
-	size = size
+	self.size = size
 
 	dye = DoubleFBO.new(size)
 	velocity = DoubleFBO.new(size)
 	divergence = FBO.new(size)
 	curl = FBO.new(size)
 	pressure = DoubleFBO.new(size)
+
+
+func release() -> void:
+	if not initialized:
+		return
+	dye.release()
+	velocity.release()
+	divergence.release()
+	curl.release()
+	pressure.release()
+	dye = null
+	velocity = null
+	divergence = null
+	curl = null
+	pressure = null
+	initialized = false

@@ -192,8 +192,7 @@ func _run_on_render_thread(velocities: Array[Image], state: Dictionary) -> void:
 			size.x, size.y, false, Image.FORMAT_RGBAH, bytes
 		))
 
-	curl._compute_shader.release()
-	curl._compute_shader._node = null
+	curl.release()
 	velocity_fbo.release()
 	curl_fbo.release()
 

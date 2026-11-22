@@ -226,8 +226,7 @@ func _run_on_render_thread(
 			target_size.x, target_size.y, false, Image.FORMAT_RGBAH, bytes
 		))
 
-	advection._compute_shader.release()
-	advection._compute_shader._node = null
+	advection.release()
 	if source_fbo != null:
 		source_fbo.release()
 	velocity_fbo.release()

@@ -58,15 +58,19 @@ func swap() -> void:
 
 
 func release() -> void:
+	# Detach the displayed texture before its RIDs are freed
+	if _texture != null:
+		_texture.texture_rd_rid = RID()
+	RenderingServer.call_on_render_thread(_free_textures)
+
+
+func _free_textures() -> void:
 	var index = 0
 	while index < _texture_rds.size():
 		if _texture_rds[index].is_valid():
 			rd.free_rid(_texture_rds[index])
 			_texture_rds[index] = RID()
 		index += 1
-
-	if _texture != null:
-		_texture.texture_rd_rid = _texture_rds[_read_index]
 
 
 func get_texture_rd() -> RID:

@@ -79,3 +79,10 @@ func process(delta: float) -> void:
 	]).to_byte_array()
 	_compute_shader.process(push_constants)
 	_source.swap()
+
+
+# Frees the GPU resources and breaks the reference cycle between this pass and
+# its shader (_node), so both can be freed.
+func release() -> void:
+	_compute_shader.release()
+	_compute_shader._node = null
