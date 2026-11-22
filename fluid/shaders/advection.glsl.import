@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://devwxv5ye64wu"
+path="res://.godot/imported/advection.glsl-3a80e5e2aa89e2d40c5086d029ea1786.res"
+
+[deps]
+
+source_file="res://fluid/shaders/advection.glsl"
+dest_files=["res://.godot/imported/advection.glsl-3a80e5e2aa89e2d40c5086d029ea1786.res"]
+
+[params]
+

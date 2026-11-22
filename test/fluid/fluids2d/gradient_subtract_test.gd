@@ -18,7 +18,7 @@ func test_zero_pressure_preserves_velocity() -> void:
 
 
 func test_constant_pressure_preserves_velocity() -> void:
-	# Edge pixels only stay unchanged if clamped neighbours repeat the edge value.
+	# Edge pixels only stay unchanged if clamped neighbours repeat the edge value
 	var results := await _run_gradient_subtract(
 		_velocity_image(TEST_SIZE, INITIAL), [_pressure_constant(TEST_SIZE, 5.0)]
 	)
@@ -50,10 +50,6 @@ func test_pressure_increasing_across_y_reduces_vy() -> void:
 
 
 func test_pressure_point_pushes_neighbours_away() -> void:
-	# Pressure 4 at (3, 3). Only its four neighbours see a gradient:
-	# (2, 3): R - L = 4, vx -= 4.   (4, 3): R - L = -4, vx += 4.
-	# (3, 2): T - B = 4, vy -= 4.   (3, 4): T - B = -4, vy += 4.
-	# The point itself has equal neighbours on both sides, so it is unchanged.
 	var pressure := _pressure_constant(TEST_SIZE, 0.0)
 	pressure.set_pixel(3, 3, Color(4.0, 0.0, 0.0, 1.0))
 	var results := await _run_gradient_subtract(
@@ -87,7 +83,6 @@ func test_size_not_divisible_by_workgroup_size() -> void:
 
 
 func test_consecutive_passes_follow_velocity_swaps() -> void:
-	# Same pass instance and textures; the second dispatch must read the first result.
 	var results := await _run_gradient_subtract(
 		_velocity_image(TEST_SIZE, INITIAL),
 		[_pressure_ramp(TEST_SIZE, true), _pressure_ramp(TEST_SIZE, false)]
@@ -126,8 +121,6 @@ func _pressure_ramp(size: Vector2i, across_x: bool) -> Image:
 	return image
 
 
-# R - L for a pressure equal to its own coordinate, without Pavel's missing 0.5.
-# Interior: (i + 1) - (i - 1) = 2. At either edge one side clamps, giving 1.
 func _ramp_gradient(coordinate: int, length: int) -> float:
 	if coordinate == 0 or coordinate == length - 1:
 		return 1.0
@@ -189,7 +182,7 @@ func _run_on_render_thread(velocity: Image, pressures: Array[Image], state: Dict
 	var gradient_subtract := GradientSubtract.new(fields)
 	var results: Array[Image] = []
 	var message := ""
-	# A sentinel ensures an unwritten output pixel fails even a zero-field test.
+
 	var sentinel := Image.create(size.x, size.y, false, Image.FORMAT_RGBAH)
 	sentinel.fill(Color(99.0, 99.0, 99.0, 0.0))
 
@@ -224,7 +217,6 @@ func _run_on_render_thread(velocity: Image, pressures: Array[Image], state: Dict
 		))
 
 	gradient_subtract._compute_shader.release()
-	# Break the reference cycle between GradientSubtract and its shader.
 	gradient_subtract._compute_shader._node = null
 	fields.dye.release()
 	fields.velocity.release()
