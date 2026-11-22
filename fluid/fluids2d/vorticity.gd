@@ -13,7 +13,7 @@ const FBO = preload("res://gpu/fbo.gd")
 @export var radius: float
 
 # TODO: This is a config value (CURL)
-var strength: float = 1.0
+var strength: float = 0.0
 
 var _curl: FBO
 var _velocity: DoubleFBO
