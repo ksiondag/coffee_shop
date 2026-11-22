@@ -73,5 +73,9 @@ func get_texture_rd() -> RID:
 	return _texture_rds[_read_index]
 
 
+func get_write_texture_rd() -> RID:
+	return _texture_rds[(_read_index + 1) % 2]
+
+
 func get_size() -> Vector2:
 	return _size
