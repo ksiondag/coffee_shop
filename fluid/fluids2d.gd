@@ -6,6 +6,7 @@ const Vorticity = preload("res://fluid/fluids2d/vorticity.gd")
 const Divergence = preload("res://fluid/fluids2d/divergence.gd")
 const PressureDecay = preload("res://fluid/fluids2d/pressure_decay.gd")
 const Pressure = preload("res://fluid/fluids2d/pressure.gd")
+const GradientSubtract = preload("res://fluid/fluids2d/gradient_subtract.gd")
 
 @export var fluid_fields: FluidFields
 
@@ -16,6 +17,7 @@ var _vorticity: Vorticity
 var _divergence: Divergence
 var _pressure_decay: PressureDecay
 var _pressure: Pressure
+var _gradient_subtract: GradientSubtract
 
 
 func _ready() -> void:
@@ -29,6 +31,7 @@ func initialize() -> void:
 	_divergence = Divergence.new(fluid_fields)
 	_pressure_decay = PressureDecay.new(fluid_fields)
 	_pressure = Pressure.new(fluid_fields)
+	_gradient_subtract = GradientSubtract.new(fluid_fields)
 
 
 func _process(delta: float) -> void:
@@ -43,6 +46,7 @@ func _step(delta: float) -> void:
 	_divergence.process(delta)
 	_pressure_decay.process(delta)
 	_pressure.process(delta)
+	_gradient_subtract.process(delta)
 
 
 func _on_view_resized(_size: Vector2) -> void:

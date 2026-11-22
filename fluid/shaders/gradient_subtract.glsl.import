@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cxcn4jqncgsqg"
+path="res://.godot/imported/gradient_subtract.glsl-b8a77cccdf4b97db04738c3b3f0e8c1e.res"
+
+[deps]
+
+source_file="res://fluid/shaders/gradient_subtract.glsl"
+dest_files=["res://.godot/imported/gradient_subtract.glsl-b8a77cccdf4b97db04738c3b3f0e8c1e.res"]
+
+[params]
+
