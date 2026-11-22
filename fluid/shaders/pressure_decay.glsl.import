@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://c5rltvoxerhnm"
+path="res://.godot/imported/pressure_decay.glsl-5138b3ddd33c0acf78e7ebc96c44121a.res"
+
+[deps]
+
+source_file="res://fluid/shaders/pressure_decay.glsl"
+dest_files=["res://.godot/imported/pressure_decay.glsl-5138b3ddd33c0acf78e7ebc96c44121a.res"]
+
+[params]
+
