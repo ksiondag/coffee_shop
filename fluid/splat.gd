@@ -11,7 +11,17 @@ const GaussianSplat = preload("res://fluid/fluids2d/gaussian_splat.gd")
 @export var output: Texture2DRD
 @export var color: Color
 
+# TODO:  radius should be pixel-size to be easier to reason on
 @export var radius: float
+
+# TODO: Numbers to play with to fine-tune (should be exports
+# The pitcher velocity
+@export var pitcher_velocity: float
+# Pitcher angle (so not just straight down)
+@export_range(0,360) var pitcher_angle: float
+
+# Velocity radius to splat radius ratio
+# Fluids2D conifg constants
 
 var dye: DoubleFBO
 var dye_splat: GaussianSplat
@@ -46,17 +56,22 @@ func _exit_tree() -> void:
 	velocity_splat = null
 
 
+func _velocity_from_scale_and_angle(scale: float, angle: float) -> Color:
+	var angle_radian := angle * PI / 180
+	return Color(
+		scale * cos(angle_radian),
+		scale * sin(angle_radian),
+		0,
+		0,
+	)
+
+
 func _process(delta: float) -> void:
 	if mouse_left_pressed:
 		if velocity_splat != null:
 			velocity_splat.process(
 				Vector2(mouse_position.x / velocity.get_size().x, mouse_position.y / velocity.get_size().y),
-				Color(
-					0,
-					60,
-					0,
-					0,
-				),
+				_velocity_from_scale_and_angle(pitcher_velocity, pitcher_angle),
 				radius,
 				velocity.get_size().x / velocity.get_size().y
 			)
