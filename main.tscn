@@ -38,7 +38,7 @@ fluid_fields = SubResource("Resource_1bvp3")
 output = SubResource("Texture2DRD_5c1er")
 color = Color(1, 1, 1, 1)
 radius = 0.002
-pitcher_velocity = 15.0
+pitcher_velocity = 30.0
 pitcher_angle = 90.0
 velocity_dye_ratio = 10.0
 

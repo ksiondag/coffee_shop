@@ -65,15 +65,15 @@ func _process(delta: float) -> void:
 
 func _step(delta: float) -> void:
 	_curl.process(delta)
-	_vorticity.process(delta)
+	_vorticity.process(delta, fluid_fields.vorticity)
 	_divergence.process(delta)
-	_pressure_decay.process(delta)
-	_pressure.process(delta)
+	_pressure_decay.process(delta, fluid_fields.pressure_decay)
+	_pressure.process(delta, fluid_fields.pressure_iterations)
 	_gradient_subtract.process(delta)
 
 	# Velocity first, then dye carried by the new velocity
 	_velocity_advection.process(delta, fluid_fields.velocity_dissipation)
-	_dye_advection.process(delta, Advection.DYE_DISSIPATION)
+	_dye_advection.process(delta, fluid_fields.dye_dissipation)
 
 
 func _on_view_resized(_size: Vector2) -> void:

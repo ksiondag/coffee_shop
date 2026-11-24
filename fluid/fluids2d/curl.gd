@@ -7,11 +7,6 @@ const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
 const FBO = preload("res://gpu/fbo.gd")
 
-@export var output: Texture2DRD
-@export var color: Color
-
-@export var radius: float
-
 var _curl: FBO
 var _velocity: DoubleFBO
 var _compute_shader: ComputeShader

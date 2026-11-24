@@ -3,7 +3,11 @@ class_name FluidFields extends Resource
 const FBO = preload("res://gpu/fbo.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
 
+@export var dye_dissipation := 0.0
 @export var velocity_dissipation := 2.0
+@export var pressure_iterations := 20
+@export var pressure_decay := 0.8
+@export var vorticity := 0.0
 
 var initialized: bool = false
 

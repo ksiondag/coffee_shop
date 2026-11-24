@@ -7,9 +7,6 @@ const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
 const FBO = preload("res://gpu/fbo.gd")
 
-# TODO: This is a config value, when porting over config numbers
-var iterations: int = 20
-
 var _divergence: FBO
 var _pressure: DoubleFBO
 var _compute_shader: ComputeShader
@@ -65,7 +62,7 @@ func _init(divergence: FBO, pressure: DoubleFBO) -> void:
 	_compute_shader = PressureShader.new(self, _pressure, SHADER_PATH)
 
 
-func process(_delta: float) -> void:
+func process(_delta: float, iterations: int) -> void:
 	for i in range(iterations):
 		_compute_shader.process([])
 		_pressure.swap()

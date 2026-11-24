@@ -12,9 +12,6 @@ const FBO = preload("res://gpu/fbo.gd")
 
 @export var radius: float
 
-# TODO: This is a config value (CURL)
-var strength: float = 0.0
-
 var _curl: FBO
 var _velocity: DoubleFBO
 var _compute_shader: ComputeShader
@@ -71,7 +68,7 @@ func _init(velocity: DoubleFBO, curl: FBO) -> void:
 	_compute_shader = VorticityShader.new(self, _velocity, SHADER_PATH)
 
 
-func process(delta: float) -> void:
+func process(delta: float, strength: float) -> void:
 	var push_constants = PackedFloat32Array([
 		# curl constant
 		strength,

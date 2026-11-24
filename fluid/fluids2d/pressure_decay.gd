@@ -6,9 +6,6 @@ const SHADER_PATH := "res://fluid/shaders/pressure_decay.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
 
-# TODO: This is a config value, when porting over config numbers
-var value: float = 0.8
-
 var _pressure: DoubleFBO
 var _compute_shader: ComputeShader
 
@@ -51,8 +48,8 @@ func _init(pressure: DoubleFBO) -> void:
 	_compute_shader = PressureDecayShader.new(self, _pressure, SHADER_PATH)
 
 
-func process(_delta: float) -> void:
-	var push_constants := PackedFloat32Array([value]).to_byte_array()
+func process(_delta: float, decay: float) -> void:
+	var push_constants := PackedFloat32Array([decay]).to_byte_array()
 	_compute_shader.process(push_constants)
 	_pressure.swap()
 

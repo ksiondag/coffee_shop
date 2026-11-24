@@ -6,9 +6,6 @@ const SHADER_PATH := "res://fluid/shaders/advection.glsl"
 const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
 
-# TODO: These are config values (VELOCITY_DISSIPATION / DENSITY_DISSIPATION
-const DYE_DISSIPATION := 0.0
-
 var _velocity: DoubleFBO
 var _source: DoubleFBO
 var _compute_shader: ComputeShader
