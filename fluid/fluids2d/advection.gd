@@ -8,7 +8,7 @@ const DoubleFBO = preload("res://gpu/double_fbo.gd")
 
 # TODO: These are config values (VELOCITY_DISSIPATION / DENSITY_DISSIPATION
 const VELOCITY_DISSIPATION := 2.0
-const DYE_DISSIPATION := 0.5
+const DYE_DISSIPATION := 0.0
 
 var dissipation: float
 

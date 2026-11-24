@@ -24,13 +24,6 @@ var texture_size: Vector2i
 
 func _input(event) -> void:
 	if event.is_action_pressed("click"):
-		if dye_splat != null:
-			dye_splat.process(
-				Vector2(event.position.x / dye.get_size().x, event.position.y / dye.get_size().y),
-				color,
-				radius / 10.0,
-				dye.get_size().x / dye.get_size().y
-			)
 		if velocity_splat != null:
 			velocity_splat.process(
 				Vector2(event.position.x / velocity.get_size().x, event.position.y / velocity.get_size().y),
@@ -42,6 +35,13 @@ func _input(event) -> void:
 				),
 				radius,
 				velocity.get_size().x / velocity.get_size().y
+			)
+		if dye_splat != null:
+			dye_splat.process(
+				Vector2(event.position.x / dye.get_size().x, event.position.y / dye.get_size().y),
+				color,
+				radius / 10.0,
+				dye.get_size().x / dye.get_size().y
 			)
 
 
