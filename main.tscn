@@ -40,7 +40,7 @@ color = Color(1, 1, 1, 1)
 radius = 0.002
 pitcher_velocity = 15.0
 pitcher_angle = 90.0
-velocity_dye_ratio = 5.0
+velocity_dye_ratio = 10.0
 
 [node name="Clear" type="Node" parent="." unique_id=1494218191]
 script = ExtResource("3_1bvp3")
