@@ -21,28 +21,16 @@ var velocity_splat: GaussianSplat
 
 var texture_size: Vector2i
 
-
+var mouse_left_pressed: bool = false
+var mouse_position: Vector2
 func _input(event) -> void:
-	if event.is_action_pressed("click"):
-		if velocity_splat != null:
-			velocity_splat.process(
-				Vector2(event.position.x / velocity.get_size().x, event.position.y / velocity.get_size().y),
-				Color(
-					0,
-					600,
-					0,
-					0,
-				),
-				radius,
-				velocity.get_size().x / velocity.get_size().y
-			)
-		if dye_splat != null:
-			dye_splat.process(
-				Vector2(event.position.x / dye.get_size().x, event.position.y / dye.get_size().y),
-				color,
-				radius / 10.0,
-				dye.get_size().x / dye.get_size().y
-			)
+	if event.is_action_pressed("mouse_left"):
+		mouse_left_pressed = true
+		mouse_position = event.position
+	elif event.is_action_released("mouse_left"):
+		mouse_left_pressed = false
+	elif event is InputEventMouseMotion:
+		mouse_position = event.position
 
 
 func _enter_tree() -> void:
@@ -59,8 +47,26 @@ func _exit_tree() -> void:
 
 
 func _process(delta: float) -> void:
-	# Only send splat on click
-	pass
+	if mouse_left_pressed:
+		if velocity_splat != null:
+			velocity_splat.process(
+				Vector2(mouse_position.x / velocity.get_size().x, mouse_position.y / velocity.get_size().y),
+				Color(
+					0,
+					600,
+					0,
+					0,
+				),
+				radius,
+				velocity.get_size().x / velocity.get_size().y
+			)
+		if dye_splat != null:
+			dye_splat.process(
+				Vector2(mouse_position.x / dye.get_size().x, mouse_position.y / dye.get_size().y),
+				color,
+				radius / 10.0,
+				dye.get_size().x / dye.get_size().y
+			)
 
 
 func _on_view_resized(_size: Vector2) -> void:
