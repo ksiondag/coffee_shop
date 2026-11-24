@@ -37,7 +37,7 @@ script = ExtResource("3_h2yge")
 fluid_fields = SubResource("Resource_1bvp3")
 output = SubResource("Texture2DRD_5c1er")
 color = Color(1, 1, 1, 1)
-radius = 22.0
+radius = 0.1
 
 [node name="Clear" type="Node" parent="." unique_id=1494218191]
 script = ExtResource("3_1bvp3")
