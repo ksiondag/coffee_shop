@@ -53,7 +53,7 @@ func _process(delta: float) -> void:
 				Vector2(mouse_position.x / velocity.get_size().x, mouse_position.y / velocity.get_size().y),
 				Color(
 					0,
-					600,
+					60,
 					0,
 					0,
 				),
