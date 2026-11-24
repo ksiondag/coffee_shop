@@ -21,6 +21,8 @@ const GaussianSplat = preload("res://fluid/fluids2d/gaussian_splat.gd")
 @export_range(0,360) var pitcher_angle: float
 
 # Velocity radius to splat radius ratio
+@export var velocity_dye_ratio: float
+
 # Fluids2D conifg constants
 
 var dye: DoubleFBO
@@ -79,7 +81,7 @@ func _process(delta: float) -> void:
 			dye_splat.process(
 				Vector2(mouse_position.x / dye.get_size().x, mouse_position.y / dye.get_size().y),
 				color,
-				radius / 10.0,
+				radius / velocity_dye_ratio,
 				dye.get_size().x / dye.get_size().y
 			)
 

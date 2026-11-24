@@ -7,10 +7,7 @@ const ComputeShader = preload("res://gpu/compute_shader.gd")
 const DoubleFBO = preload("res://gpu/double_fbo.gd")
 
 # TODO: These are config values (VELOCITY_DISSIPATION / DENSITY_DISSIPATION
-const VELOCITY_DISSIPATION := 2.0
 const DYE_DISSIPATION := 0.0
-
-var dissipation: float
 
 var _velocity: DoubleFBO
 var _source: DoubleFBO
@@ -62,16 +59,15 @@ func set_uniform_sets(rd: RenderingDevice, shader: RID, compute_list: int):
 
 
 # source is the field being carried: velocity itself, or dye.
-func _init(velocity: DoubleFBO, source: DoubleFBO, source_dissipation: float) -> void:
+func _init(velocity: DoubleFBO, source: DoubleFBO) -> void:
 	_velocity = velocity
 	_source = source
-	dissipation = source_dissipation
 	# The dispatch covers the source, which may differ in size from velocity.
 	_compute_shader = AdvectionShader.new(self, _source, SHADER_PATH)
 
 
 # Call on the render thread, like the other passes in Fluids2D._step().
-func process(delta: float) -> void:
+func process(delta: float, dissipation: float) -> void:
 	var push_constants := PackedFloat32Array([
 		delta,
 		dissipation,

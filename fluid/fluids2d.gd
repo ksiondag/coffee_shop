@@ -41,8 +41,8 @@ func initialize() -> void:
 	_pressure_decay = PressureDecay.new(pressure)
 	_pressure = Pressure.new(divergence, pressure)
 	_gradient_subtract = GradientSubtract.new(pressure, velocity)
-	_velocity_advection = Advection.new(velocity, velocity, Advection.VELOCITY_DISSIPATION)
-	_dye_advection = Advection.new(velocity, dye, Advection.DYE_DISSIPATION)
+	_velocity_advection = Advection.new(velocity, velocity)
+	_dye_advection = Advection.new(velocity, dye)
 
 
 func _exit_tree() -> void:
@@ -72,8 +72,8 @@ func _step(delta: float) -> void:
 	_gradient_subtract.process(delta)
 
 	# Velocity first, then dye carried by the new velocity
-	_velocity_advection.process(delta)
-	_dye_advection.process(delta)
+	_velocity_advection.process(delta, fluid_fields.velocity_dissipation)
+	_dye_advection.process(delta, Advection.DYE_DISSIPATION)
 
 
 func _on_view_resized(_size: Vector2) -> void:
