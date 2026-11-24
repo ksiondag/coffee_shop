@@ -10,6 +10,7 @@
 
 [sub_resource type="Resource" id="Resource_1bvp3"]
 script = ExtResource("5_lquwl")
+pressure_decay = 0.9
 
 [node name="Main" type="Control" unique_id=1239921856]
 layout_mode = 3
@@ -37,7 +38,7 @@ script = ExtResource("3_h2yge")
 fluid_fields = SubResource("Resource_1bvp3")
 output = SubResource("Texture2DRD_5c1er")
 color = Color(1, 1, 1, 1)
-radius = 0.002
+radius_percent = 0.1
 pitcher_velocity = 30.0
 pitcher_angle = 90.0
 velocity_dye_ratio = 10.0

@@ -12,7 +12,7 @@ const GaussianSplat = preload("res://fluid/fluids2d/gaussian_splat.gd")
 @export var color: Color
 
 # TODO:  radius should be pixel-size to be easier to reason on
-@export var radius: float
+@export var radius_percent: float
 
 # TODO: Numbers to play with to fine-tune (should be exports
 # The pitcher velocity
@@ -70,6 +70,7 @@ func _velocity_from_scale_and_angle(scale: float, angle: float) -> Color:
 
 func _process(delta: float) -> void:
 	if mouse_left_pressed:
+		var radius = radius_percent / 100
 		if velocity_splat != null:
 			velocity_splat.process(
 				Vector2(mouse_position.x / velocity.get_size().x, mouse_position.y / velocity.get_size().y),
